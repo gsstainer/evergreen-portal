@@ -14,7 +14,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Premium Bio-Slate CSS Styling (High Contrast Inter Font, Zero-Placeholder Tables)
+# Premium Bio-Slate CSS Styling (High Contrast Inter Font, Responsive Tables)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -29,12 +29,12 @@ st.markdown("""
         background-color: #0b0f19;
     }
     
-    /* Typography Scannability Contrast (Ensuring Maximum Readability) */
+    /* Typography Scannability Contrast */
     h1 {
         font-size: 34px;
         font-weight: 800;
         letter-spacing: -0.8px;
-        color: #f8fafc; /* Brilliant white */
+        color: #f8fafc;
         margin-bottom: 8px;
     }
     h2 {
@@ -62,14 +62,14 @@ st.markdown("""
         font-weight: 500;
     }
     .breadcrumb-active {
-        color: #14b8a6; /* Radiant Teal active path */
+        color: #14b8a6;
         font-weight: 700;
     }
     
     /* Metric & Card Wrapper Components with Enhanced Text Contrast */
     .card-wrapper {
         background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        border: 1px solid #475569; /* Brighter slate border to define boundary */
+        border: 1px solid #475569;
         border-radius: 12px;
         padding: 22px;
         margin-bottom: 18px;
@@ -80,11 +80,11 @@ st.markdown("""
     div[data-testid="stMetricValue"] {
         font-size: 28px;
         font-weight: 800;
-        color: #2dd4bf !important; /* Extremely bright Radiant Cyan for dark background visibility */
+        color: #2dd4bf !important;
         text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
     div[data-testid="stMetricLabel"] {
-        color: #f1f5f9 !important; /* Bold white labels */
+        color: #f1f5f9 !important;
         font-weight: 600 !important;
         font-size: 14px !important;
     }
@@ -99,7 +99,7 @@ st.markdown("""
         margin-bottom: 28px;
     }
     .gnb-banner p {
-        color: #cbd5e1; /* Clear readability */
+        color: #cbd5e1;
         margin: 6px 0 0 0;
         font-size: 15px;
     }
@@ -109,15 +109,15 @@ st.markdown("""
         width: 100%;
         border-collapse: collapse;
         margin: 16px 0;
-        font-size: 15px; /* Scaled up for PI review comfort */
+        font-size: 15px;
         text-align: left;
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
     }
     .fixed-header-table th {
-        background-color: #1e293b; /* Distinct Slate Navy headers */
-        color: #f8fafc; /* Brilliant white header text */
+        background-color: #1e293b;
+        color: #f8fafc;
         font-weight: 700;
         padding: 14px 16px;
         border-bottom: 3px solid #0f172a;
@@ -126,14 +126,14 @@ st.markdown("""
     .fixed-header-table td {
         padding: 14px 16px;
         border-bottom: 1px solid #334155;
-        color: #f1f5f9; /* Bright font over dark slate row */
+        color: #f1f5f9;
         line-height: 1.5;
     }
     .fixed-header-table tr {
         background-color: #0f172a;
     }
     .fixed-header-table tr:hover {
-        background-color: #155e75; /* Radiant Deep Teal hover effect to focus row */
+        background-color: #155e75;
         transition: background-color 0.15s ease-in-out;
     }
     
@@ -184,16 +184,15 @@ def render_badge(status):
     elif status == "진행중":
         bg_col, txt_col = "#1e3a8a", "#bfdbfe"
     elif status == "대기":
-        bg_col, txt_col = "#374151", "#cbd5e1" # Slate Grey pastel
-    else:  # 지연 또는 블로커
-        bg_col, txt_col = "#7f1d1d", "#fecdd3" # Soft pastel Coral/Red
+        bg_col, txt_col = "#374151", "#cbd5e1"
+    else:
+        bg_col, txt_col = "#7f1d1d", "#fecdd3"
     return f'<span style="background-color: {bg_col}; color: {txt_col}; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 12px; border: 1px solid {txt_col}40;">{status}</span>'
 
 def tooltip(term, definition):
     """Generates an embedded custom tooltip anchor."""
     return f'<span class="custom-tooltip">{term}<span class="tooltip-box">{definition}</span></span>'
 
-# Core medical/biological dictionary for tooltips
 dict_tooltip = {
     "mOS": "<b>mOS (median Overall Survival)</b>: 환자군의 50%가 생존하는 시점으로 항암 약물 효능 평가의 최종 표준 마커.",
     "TME": "<b>TME (Tumor Microenvironment)</b>: 종양을 둘러싼 복잡한 기질, 혈관, 면역세포 환경으로 ALK7 억제제 및 면역 항암제의 핵심 작용처.",
@@ -207,7 +206,7 @@ dict_tooltip = {
 }
 
 # ---------------------------------------------------------
-# Static Fail-Safe Built-in Pipeline Data (Sovereign directive to prevent empty screen)
+# Static Fail-Safe Built-in Pipeline Data
 # ---------------------------------------------------------
 BUILTIN_PIPELINES = {
     "Y0_5yr_Summary": [
@@ -225,11 +224,27 @@ BUILTIN_PIPELINES = {
 }
 
 # ---------------------------------------------------------
-# Data Loading with Fallback to Built-in Database
+# Data Loading and Caching (MUST BE DEFINED BEFORE CALLING)
 # ---------------------------------------------------------
+EXCEL_PATH = r"g:\내 드라이브\KIST\공동연구\Sarcopenia_김명석\01_Grants_and_Proposals\2026\NST_에버그린\에버그린_프로젝트_연차별_연구내용_정리.xlsx"
+
+@st.cache_data
+def load_excel_data():
+    sheets = {}
+    if os.path.exists(EXCEL_PATH):
+        try:
+            xl = pd.ExcelFile(EXCEL_PATH)
+            for sheet in xl.sheet_names:
+                df = pd.read_excel(EXCEL_PATH, sheet_name=sheet)
+                df = df.dropna(how='all').fillna("")
+                sheets[sheet] = df
+        except Exception as e:
+            st.error(f"Error reading Excel: {str(e)}")
+    return sheets
+
+# --- CRITICAL FIX: Safe execution call after function definition ---
 excel_data = load_excel_data()
 if not excel_data:
-    # Hydrate fallback structures to keep Pipelines working everywhere
     excel_data = {}
     for sheet_name, rows in BUILTIN_PIPELINES.items():
         excel_data[sheet_name] = pd.DataFrame(rows)
@@ -273,7 +288,6 @@ if "대시보드 총괄" in menu_selection:
     st.markdown(f"3대 핵심 Exit Points(EP)의 비임상, 특허 및 기술이전 진척률을 통합 모니터링하는 LIMS 관제 대시보드입니다. ({tooltip('mOS', dict_tooltip['mOS'])}, {tooltip('TME', dict_tooltip['TME'])}, {tooltip('4-HNE', dict_tooltip['4-HNE'])} 등 주요 바이오 마커에 호버 시 상세 가이드가 팝업됩니다.)", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 3-Column Premium Matrix Cards (High Contrast Adjustments)
     col_ep1, col_ep2, col_ep3 = st.columns(3)
     with col_ep1:
         st.markdown(r"""
@@ -303,7 +317,6 @@ if "대시보드 총괄" in menu_selection:
         </div>
         """, unsafe_allow_html=True)
 
-    # 1차년도 8월 시작 사전 안내 배너
     st.markdown(r"""
     <div style="background-color: #1e1b4b; border-left: 6px solid #2dd4bf; padding: 18px; border-radius: 8px; margin-top: 15px; margin-bottom: 25px;">
         <span style="color: #f8fafc; font-weight: 800; font-size: 16px;">📢 에버그린 프로젝트 1차년도 개시 일정 안내</span>
@@ -311,7 +324,6 @@ if "대시보드 총괄" in menu_selection:
     </div>
     """, unsafe_allow_html=True)
 
-    # Project timeline simulation (Plotly)
     st.subheader("📈 5개년 연차별 마일스톤 온트랙(On-Track) 목표 비중")
     chart_data = pd.DataFrame({
         "연차": ["1차년도", "2차년도", "3차년도", "4차년도", "5차년도"] * 3,
@@ -327,20 +339,17 @@ if "대시보드 총괄" in menu_selection:
 # ---------------------------------------------------------
 elif "세부과제별 파이프라인" in menu_selection:
     st.markdown("<h1>🧬 세부과제별 마일스톤 및 실험 파이프라인</h1>", unsafe_allow_html=True)
-    st.markdown(f"국가전략과제계획서에서 추출된 공식 연차별 마일스톤 테이블입니다. 8월 과제 시작에 맞춰 모든 세부 실험 태스크는 <b>'대기'</b> 상태로 안전하게 셋업되었습니다. ({tooltip('TSA/DSF', dict_tooltip['TSA/DSF'])}, {tooltip('dLck-cre', dict_tooltip['dLck-cre'])}) 등 전문 용어에 호버하시면 측정 근거 주석이 팝업됩니다.", unsafe_allow_html=True)
+    st.markdown(f"국가전략과제계획서에서 추출된 연차별 마일스톤 테이블입니다. 8월 과제 시작에 맞춰 모든 세부 실험 태스크는 <b>'대기'</b> 상태로 안전하게 셋업되었습니다. ({tooltip('TSA/DSF', dict_tooltip['TSA/DSF'])}, {tooltip('dLck-cre', dict_tooltip['dLck-cre'])}) 등 전문 용어에 호버하시면 측정 근거 주석이 팝업됩니다.", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Search Bar
     search_q = st.text_input("🔍 마일스톤 및 태스크 키워드 검색 (예: ALK7, 오가노이드, Ets1, SARM1 등)", "")
     
-    # Render fully formatted custom HTML Table with maximum readability
     rows = []
     for s_name, df in excel_data.items():
         if s_name == "Y0_5yr_Summary":
             continue
         for idx, r in df.iterrows():
             task_text = r.get("Task — Specific Experiments (Bullet Points)", "") or r.get("Unnamed: 3", "")
-            # Skip non-data header rows
             if not task_text or "Task" in str(task_text) or "Data Source" in str(task_text):
                 continue
                 
@@ -350,10 +359,9 @@ elif "세부과제별 파이프라인" in menu_selection:
                 "Milestone": r.get("Milestone (Phase)", "") or r.get("Unnamed: 2", ""),
                 "세부 실험 Task": str(task_text).replace("\n", "<br>"),
                 "일정": r.get("Timeline", "") or r.get("Unnamed: 5", ""),
-                "상태": "대기" # All initialized to 대기 due to Year 1 pre-start status (August start)
+                "상태": "대기"
             }
             
-            # Apply search filter if query exists
             if search_q:
                 row_str = " ".join([str(v) for v in row_data.values()]).lower()
                 if search_q.lower() in row_str:
@@ -363,7 +371,6 @@ elif "세부과제별 파이프라인" in menu_selection:
 
     if rows:
         st.subheader(f"📊 공식 실험 파이프라인 (총 {len(rows)}개 태스크 조회됨)")
-        # Premium responsive HTML table with distinct borders and hovers
         table_html = """
         <table class="fixed-header-table">
             <thead>
@@ -394,7 +401,6 @@ elif "세부과제별 파이프라인" in menu_selection:
     else:
         st.info("검색 조건에 부합하는 파이프라인 태스크가 없습니다.")
 
-    # raw dataframe backup view
     with st.expander("📂 원본 데이터 엑셀 시트 뷰어"):
         if excel_data:
             sub_tabs = st.tabs(list(excel_data.keys()))
@@ -410,46 +416,41 @@ elif "물질 라이브러리" in menu_selection:
     st.markdown(f"Selleckchem L3800 및 미생물 대사산물 23,000종 중 선별된 {tooltip('ALK7', dict_tooltip['ALK7'])}, TAM, SARM1, Ets1 표적 라이브러리의 Wet-Dry 통합 데이터 매퍼입니다. 과제 시작 전이므로 모든 물질 검증 상태는 <b>'대기'</b>로 연동됩니다.", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 3-Click Filter layout
     col_f1, col_f2, col_f3 = st.columns(3)
     with col_f1:
         f_epic = st.selectbox("Epic 과제 필터", ["All", "EP-EG1 (황반변성)", "EP-EG2 (소화기암)", "EP-EG3 (면역노화)"])
     with col_f2:
         f_type = st.selectbox("화합물 모달리티", ["All", "Kinase Domain (저분자)", "ECD Domain (중분자 펩타이드)", "Natural Product (천연물/미생물)"])
     with col_f3:
-        min_eff_val = st.slider("최소 약효 활성도 (Efficacy) [%]", 0, 100, 0, step=5) # 0% as default since Year 1 pre-start
+        min_eff_val = st.slider("최소 약효 활성도 (Efficacy) [%]", 0, 100, 0, step=5)
 
-    # Mock Data generation aligned with SSOT
     np.random.seed(42)
     substances = []
     
-    # Official Leads
     substances.append({"Substance ID": "EVG-EG1-001", "Name": "Auraptene Derivative", "Type": "Natural Product (천연물/미생물)", "Epic ID": "EP-EG1 (황반변성)", "Target": "MerTK / SARM1", "ΔG": -9.2, "ΔΔG": -2.1, "TSA dTm": 4.5, "Efficacy": 78.0, "Tox": 82.0, "True Lead": True, "Status": "대기"})
     substances.append({"Substance ID": "EVG-EG2-001", "Name": "Micheliolide", "Type": "Natural Product (천연물/미생물)", "Epic ID": "EP-EG2 (소화기암)", "Target": "ALK7 Kinase domain", "ΔG": -8.7, "ΔΔG": -1.8, "TSA dTm": 3.8, "Efficacy": 68.0, "Tox": 71.0, "True Lead": True, "Status": "대기"})
     substances.append({"Substance ID": "EVG-EG2-002", "Name": "ALK7 Extracellular Peptide", "Type": "ECD Domain (중분자 펩타이드)", "Epic ID": "EP-EG2 (소화기암)", "Target": "ALK7 ECD domain", "ΔG": -8.9, "ΔΔG": -1.6, "TSA dTm": 2.8, "Efficacy": 72.0, "Tox": 69.0, "True Lead": True, "Status": "대기"})
     substances.append({"Substance ID": "EVG-EG3-001", "Name": "Ets1 Stabilizing Compound", "Type": "Kinase Domain (저분자)", "Epic ID": "EP-EG3 (면역노화)", "Target": "Ets1 chromatin complex", "ΔG": -9.0, "ΔΔG": -2.0, "TSA dTm": 4.1, "Efficacy": 75.0, "Tox": 80.0, "True Lead": True, "Status": "대기"})
 
-    # Generates 30 random samples
-    for i in range(1, 30):
-        ep_name = np.random.choice(["EP-EG1 (황반변성)", "EP-EG2 (소화기암)", "EP-EG3 (면역노화)"])
-        t = np.random.choice(["Kinase Domain (저분자)", "ECD Domain (중분자 펩타이드)", "Natural Product (천연물/미생물)"])
-        dg = round(np.random.uniform(-11.0, -6.0), 2)
-        ddg = round(np.random.uniform(-2.5, 0.1), 2)
-        dtm = round(np.random.uniform(0.1, 5.0), 2)
-        eff = round(np.random.uniform(25.0, 85.0), 1)
-        if dg < -8.5 and ddg < -1.5:
-            dtm += 1.0; eff += 15.0
-        substances.append({
-            "Substance ID": f"EVG-{i:03d}", "Name": f"Compound_{i:03d}",
-            "Type": t, "Epic ID": ep_name, "Target": "Target factor",
-            "ΔG": dg, "ΔΔG": ddg, "TSA dTm": min(dtm, 6.0), "Efficacy": min(eff, 100.0),
-            "Tox": round(np.random.uniform(20.0, 95.0), 1), "True Lead": False,
-            "Status": "대기" # All set to 대기 due to pre-start
-        })
+    for ep_name in ["EP-EG1 (황반변성)", "EP-EG2 (소화기암)", "EP-EG3 (면역노화)"]:
+        for i in range(3, 20):
+            dg = round(np.random.uniform(-11.0, -6.0), 2)
+            ddg = round(np.random.uniform(-2.5, 0.1), 2)
+            dtm = round(np.random.uniform(0.1, 5.0), 2)
+            eff = round(np.random.uniform(25.0, 85.0), 1)
+            tox = round(np.random.uniform(20.0, 90.0), 1)
+            if dg < -8.5 and ddg < -1.5:
+                dtm += 1.0; eff += 15.0
+            substances.append({
+                "Substance ID": f"EVG-{ep_name[3:6]}-{i:03d}", "Name": f"Compound_{ep_name[3:6]}_{i:03d}",
+                "Type": np.random.choice(["Kinase Domain (저분자)", "ECD Domain (중분자 펩타이드)", "Natural Product (천연물/미생물)"]),
+                "Epic ID": ep_name, "Target": "Target factor", "ΔG": dg, "ΔΔG": ddg,
+                "TSA dTm": min(dtm, 6.0), "Efficacy": min(eff, 100.0), "Tox": round(np.random.uniform(20.0, 95.0), 1),
+                "True Lead": False, "Status": "대기"
+            })
 
     df_sub = pd.DataFrame(substances)
 
-    # Filter Application
     filtered = df_sub.copy()
     if f_epic != "All":
         filtered = filtered[filtered["Epic ID"] == f_epic]
@@ -457,11 +458,9 @@ elif "물질 라이브러리" in menu_selection:
         filtered = filtered[filtered["Type"] == f_type]
     filtered = filtered[filtered["Efficacy"] >= min_eff_val]
 
-    # Display dynamic data and charts
     col_m1, col_m2 = st.columns([3, 2])
     with col_m1:
         st.subheader(f"📊 스크리닝 필터링 결과 (조회됨: {len(filtered)} 건)")
-        # Custom HTML Table representation for high contrast
         sub_table_html = """
         <table class="fixed-header-table">
             <thead>
