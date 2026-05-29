@@ -1,0 +1,16 @@
+# Block large binary and raw research data files from GitHub upload
+*.xlsx
+*.xls
+*.docx
+*.doc
+*.pdf
+*.hwpx
+*.docx
+*.R
+*.Rhistory
+*.log
+*.txt
+__pycache__/
+desktop.ini
+.Rhistory
+.ipynb_checkpoints/
