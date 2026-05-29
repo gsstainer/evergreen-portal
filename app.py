@@ -531,31 +531,27 @@ elif "세부과제별 파이프라인" in menu_selection:
 
     if rows:
         st.subheader(f"📊 공식 실험 파이프라인 (총 {len(rows)}개 태스크 조회됨)")
-        table_html = """
-        <table class="fixed-header-table">
-            <thead>
-                <tr>
-                    <th style="width: 12%;">연차</th>
-                    <th style="width: 12%;">과제 ID</th>
-                    <th style="width: 23%;">마일스톤 (Phase)</th>
-                    <th style="width: 38%;">세부 실험 Task (Specific Experiments)</th>
-                    <th style="width: 10%;">일정</th>
-                    <th style="width: 5%;">상태</th>
-                </tr>
-            </thead>
-            <tbody>
-        """
+        table_html = """<table class="fixed-header-table">
+<thead>
+<tr>
+<th style="width: 12%;">연차</th>
+<th style="width: 12%;">과제 ID</th>
+<th style="width: 23%;">마일스톤 (Phase)</th>
+<th style="width: 38%;">세부 실험 Task (Specific Experiments)</th>
+<th style="width: 10%;">일정</th>
+<th style="width: 5%;">상태</th>
+</tr>
+</thead>
+<tbody>"""
         for r_data in rows:
-            table_html += f"""
-                <tr>
-                    <td><b style="color: #f8fafc; font-size: 14px;">{r_data['연차']}</b></td>
-                    <td>{get_epic_badge(r_data['Epic ID'])}</td>
-                    <td><b style="color: #e2e8f0; font-size: 14px;">{r_data['Milestone']}</b></td>
-                    <td style="color: #cbd5e1; font-size: 13.5px; padding: 12px 16px;">{r_data['세부 실험 Task']}</td>
-                    <td><code style="background-color: #1e293b; color: #38bdf8; padding: 4px 8px; border-radius: 4px; border: 1px solid #334155; font-weight: 600;">{r_data['일정']}</code></td>
-                    <td>{render_badge(r_data['상태'])}</td>
-                </tr>
-            """
+            table_html += f"""<tr>
+<td><b style="color: #f8fafc; font-size: 14px;">{r_data['연차']}</b></td>
+<td>{get_epic_badge(r_data['Epic ID'])}</td>
+<td><b style="color: #e2e8f0; font-size: 14px;">{r_data['Milestone']}</b></td>
+<td style="color: #cbd5e1; font-size: 13.5px; padding: 12px 16px;">{r_data['세부 실험 Task']}</td>
+<td><code style="background-color: #1e293b; color: #38bdf8; padding: 4px 8px; border-radius: 4px; border: 1px solid #334155; font-weight: 600;">{r_data['일정']}</code></td>
+<td>{render_badge(r_data['상태'])}</td>
+</tr>"""
         table_html += "</tbody></table>"
         st.markdown(table_html, unsafe_allow_html=True)
     else:
@@ -621,31 +617,27 @@ elif "물질 라이브러리" in menu_selection:
     col_m1, col_m2 = st.columns([3, 2])
     with col_m1:
         st.subheader(f"📊 스크리닝 필터링 결과 (조회됨: {len(filtered)} 건)")
-        sub_table_html = """
-        <table class="fixed-header-table">
-            <thead>
-                <tr>
-                    <th>물질 ID</th>
-                    <th>물질명</th>
-                    <th>모달리티</th>
-                    <th>ΔG (Affinity)</th>
-                    <th>Efficacy (%)</th>
-                    <th>상태</th>
-                </tr>
-            </thead>
-            <tbody>
-        """
+        sub_table_html = """<table class="fixed-header-table">
+<thead>
+<tr>
+<th>물질 ID</th>
+<th>물질명</th>
+<th>모달리티</th>
+<th>ΔG (Affinity)</th>
+<th>Efficacy (%)</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>"""
         for index, row in filtered.iterrows():
-            sub_table_html += f"""
-                <tr>
-                    <td><b>{row['Substance ID']}</b></td>
-                    <td><span style="color: #2dd4bf; font-weight: 700;">{row['Name']}</span></td>
-                    <td>{row['Type']}</td>
-                    <td><code>{row['ΔG']} kcal/mol</code></td>
-                    <td><b>{row['Efficacy']}%</b></td>
-                    <td>{render_badge(row['Status'])}</td>
-                </tr>
-            """
+            sub_table_html += f"""<tr>
+<td><b>{row['Substance ID']}</b></td>
+<td><span style="color: #2dd4bf; font-weight: 700;">{row['Name']}</span></td>
+<td>{row['Type']}</td>
+<td><code>{row['ΔG']} kcal/mol</code></td>
+<td><b>{row['Efficacy']}%</b></td>
+<td>{render_badge(row['Status'])}</td>
+</tr>"""
         sub_table_html += "</tbody></table>"
         st.markdown(sub_table_html, unsafe_allow_html=True)
         
@@ -684,19 +676,17 @@ elif "랩 미팅 및 블로커" in menu_selection:
     ]
 
     st.subheader("🚨 공동 연구팀 병목(Blocker) 현황 (과제 개시 전 준비)")
-    b_table = """
-    <table class="fixed-header-table">
-        <thead>
-            <tr>
-                <th style="width: 15%;">과제 ID</th>
-                <th style="width: 15%;">담당 PI</th>
-                <th style="width: 50%;">블로커 및 사전 조율 안건</th>
-                <th style="width: 10%;">상태 (Status)</th>
-                <th style="width: 10%;">예상 해결일</th>
-            </tr>
-        </thead>
-        <tbody>
-    """
+    b_table = """<table class="fixed-header-table">
+<thead>
+<tr>
+<th style="width: 15%;">과제 ID</th>
+<th style="width: 15%;">담당 PI</th>
+<th style="width: 50%;">블로커 및 사전 조율 안건</th>
+<th style="width: 10%;">상태 (Status)</th>
+<th style="width: 10%;">예상 해결일</th>
+</tr>
+</thead>
+<tbody>"""
     for b in blockers:
         b_table += f"<tr><td><b>{b['과제 ID']}</b></td><td>{b['담당 PI']}</td><td>{b['블로커 내용']}</td><td>{render_badge(b['심각도'])}</td><td><code>{b['예상해결']}</code></td></tr>"
     b_table += "</tbody></table>"
