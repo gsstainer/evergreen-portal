@@ -225,16 +225,131 @@ dict_tooltip = {
 # ---------------------------------------------------------
 BUILTIN_PIPELINES = {
     "Y0_5yr_Summary": [
-        {"Epic ID": "EP-EG1", "Epic (Project)": "노화 대식세포 표적 황반변성 치료제 개발 (이욱빈 팀)", "Year 1 (1차)": "AI 후보 도출 / In vitro 모델 / 전달체 기초 / In vivo SOP", "Year 2 (2차)": "Hit 검증 / Lead 확정 / MoA / 전달체 최적화", "Year 3 (3차)": "ML 2차 / KRIBB 오가노이드 PoC / 하이브리드 전달체", "Year 4 (4차)": "유도체 재검증 / Scale-up / PK/PD·비GLP 독성", "Year 5 (5차)": "AIDD SOP / CMC 완결 / NOAEL 확보 / 휴온스바이오파마 기술이전"},
-        {"Epic ID": "EP-EG2", "Epic (Project)": "소화기암 기질 해체 및 전이/악액질 제어 (김명석 팀)", "Year 1 (1차)": "오믹스 아형 정의 / VS 5단계 / ALK7 도메인별 In silico", "Year 2 (2차)": "LPHNP 설계 / Smart Release / 3D Chip / 예비 In vivo", "Year 3 (3차)": "Hit-to-lead / ADME·Tox / 장-근육-면역 축 / BM Chimera", "Year 4 (4차)": "FOLFIRINOX 병용 / 간암 전이 봉쇄 / cGAS-STING 면역 재설계", "Year 5 (5차)": "GLP 독성 완료 / CMC eCTD 규격화 / CDx 플랫폼 상용화 / 글로벌 기술이전"},
-        {"Epic ID": "EP-EG3", "Epic (Project)": "면역노화 진단 바이오마커 개발 Ets1 (이충구 팀)", "Year 1 (1차)": "Ets1 저하 T세포 노화 프로파일링 / AI 통합 라이브러리 가상 스크리닝", "Year 2 (2차)": "dLck-cre 마우스 모델 분석 / 자연 vs D-gal 노화 교차 검증 / In vitro Hit 검증", "Year 3 (3차)": "ATAC-seq + ChIP-seq / In vitro T세포 후성유전 리프로그래밍", "Year 4 (4차)": "In vivo 면역 감시 능력 회복 / SCENIC Tex->Tpex 복원 약효 실증 / 동반 질환 개선", "Year 5 (5차)": "ML 경구 BA 예측 / 기초 독성 및 Druggability 검증 / 특허 청구항 설계 및 IP 장벽 구축"}
+        {
+            "Epic ID": "EP-EG1", 
+            "Epic (Project)": "노화 대식세포 표적 황반변성 치료제 개발 (이욱빈 팀)", 
+            "Year 1 (1차)": "TAM axis & SARM1 3D 구조 분석, In silico 가상 스크리닝(NPI Finder + Agentic AI), Senolysis/Efferocytosis 이중 평가모델 및 후안부 리포좀 기초 설계.", 
+            "Year 2 (2차)": "ML/QSAR rescoring 및 off-target 리스크 평가, hERG/CYP 스크리닝, SARM1 저해 MoA 규명, 각막 투과형 지능형 능동 리포좀 설계 및 고안압 IOP 동물모델 단기 약효 실증.", 
+            "Year 3 (3차)": "2차 가상 스크리닝 및 MMPA 분석, KRIBB 협력 환자 유래 망막 오가노이드 기반 인간 PoC 규명, 식물 엑소좀-LNP 하이브리드 전달체 최종 제조 및 scRNA-seq 종단 분석.", 
+            "Year 4 (4차)": "SPR/MST 유도체 결합력 재검증, 점안 투여 vs 유리체강 내 주사 맹검 비교 검증, TFF(접선유동여과) 공정 Scale-up 및 화학적 Fingerprint 품질 동등성 검증, 비GLP 예비 안독성 확보.", 
+            "Year 5 (5차)": "AIDD SOP 및 특허 권리화, CMC 완결 QC 사양서 및 eCTD e-패키지 구축, 28일 반복 투여 독성시험(TK 프로파일) 완료 및 FIH(초회 인체 용량) 산출을 통한 Pre-IND/Factbook 완결 및 기술이전."
+        },
+        {
+            "Epic ID": "EP-EG2", 
+            "Epic (Project)": "소화기암 기질 해체 및 전이/악액질 제어 (김명석 팀)", 
+            "Year 1 (1차)": "TCGA/ICGC 글로벌 오믹스 기반 ALK7/TGF-β 하위 아형 정의 및 타겟 확정, AlphaFold2 연계 알로스테릭 포켓 스크리닝, T세포 내 ALK7-Smad2/3 면역회피 기전(Anti-PD-L1 감작) 규명.", 
+            "Year 2 (2차)": "병용 투여용 다중 탑재 하이브리드 나노 플랫폼(DDS) 구축, 미세 산성 환경 감응형 Smart Release 링커 설계, 저산소 유도 3D Tumor-Stroma on a chip 모사 및 암세포-Niche 동시 제어 최적화.", 
+            "Year 3 (3차)": "Hit-to-lead 구조 정렬 및 표적 선택성 Rescue 실험, 예비 ADME/독성 스크리닝, 동소이식 및 전이 모델 기반 mOS 연장 시너지 실증, 장-근육-면역 축(Gut-Muscle-Immune Axis) 대사 정상화.", 
+            "Year 4 (4차)": "RSM(반응표면분석법) 활용 나노 DDS 탑재 공정 스케일업, FOLFIRINOX SoC 병용 In vivo 최적화, cGAS-STING-IFN-β 경로 선천면역 활성화, 임상 코호트 TMA 디지털 병리 바이오마커 연계.", 
+            "Year 5 (5차)": "하이브리드 나노 전달체 대량 제조 QC 균일성 검증, ALK7/TIGIT 연계 동반진단(CDx) 및 액체생검CTC/Exosome 상용화 타진, Pre-IND 패키지 eCTD 규격화 완결, 글로벌 L/O 팩트북 발간 및 빅파마 실사."
+        },
+        {
+            "Epic ID": "EP-EG3", 
+            "Epic (Project)": "면역노화 진단 바이오마커 개발 Ets1 (이충구 팀)", 
+            "Year 1 (1차)": "CD127(생존 항상성) 급감 및 면역관문(PD-1, TIGIT, TIM-3) 축적에 따른 Ets1 저하 T세포 노화 프로파일링, NPI Finder + Agentic AI 활용 Ets1-크로마틴 복합체 가상 스크리닝 돌입.", 
+            "Year 2 (2차)": "T세포 특이적 Ets1 결핍 마우스 모델(dLck-cre Ets1Δ/Δ) 구축, 비장 내 나이브/메모리 T세포 풀 변동 추적, 자연노화 vs D-galactose 노화 교차 검증 및 Ets1 조절 선도물질 In vitro 유효 Hit 실증.", 
+            "Year 3 (3차)": "Ets1 결합 부위 ATAC-seq 및 ChIP-seq 후성유전 크로마틴 접근성 규명, Smarce1/Smarcc1 IP 규명, H3K27ac(활성) -> H3K27me3(잠금) Epigenetic-Rewiring 효율 정량화.", 
+            "Year 4 (4차)": "In vivo T세포 특이적 Ets1 활성화 약물 치료 효능 검증, 종말 소진 T세포(Ttex)의 전구 상태(Tpex) 리프로그래밍 검증, SCENIC/GRN 계산생물학 네트워크 규명, 전신 염증 수치 저하 노화 극복 평가.", 
+            "Year 5 (5차)": "Ets1 조절 최종 후보물질의 ADME/Tox 및 비임상 안전성 평가 패키징, 면역노화 진단 마커 및 치료 용도 특허 청구항 강력 IP 장벽 구축, 조기 L/O를 위한 비임상 팩트북 및 eCTD e-패키지 완결."
+        }
     ],
     "Y1_1차년도": [
-        {"Epic ID": "EP-EG1", "Epic (Project)": "노화 대식세포 표적 황반변성 치료제", "Milestone (Phase)": "M1. AI/구조 기반 안질환 표적 분석 및 1차 후보물질 우선순위화", "Task — Specific Experiments (Bullet Points)": "• KIST 천연물 라이브러리 큐레이션 (자생 1,160 / 생약 372 / 버섯 118)\n• NPI Finder + Agentic AI 연동: TAM axis 및 SARM1 3D 포켓 적합성 분석", "담당 PI 연구팀": "이욱빈, 최용수", "Timeline": "Y1-Q1~Q2"},
-        {"Epic ID": "EP-EG1", "Epic (Project)": "노화 대식세포 표적 황반변성 치료제", "Milestone (Phase)": "M2. In vitro 세포 수준 병리기전 및 다중 타겟 평가 모델 구축", "Task — Specific Experiments (Bullet Points)": "• [황반변성] ARPE-19 + Doxorubicin -> SA-β-gal·노화표지 모델\n• Senolysis + Efferocytosis 통합 어세이 확립", "담당 PI 연구팀": "최용수, 강석우", "Timeline": "Y1-Q2~Q3"},
-        {"Epic ID": "EP-EG2", "Epic (Project)": "소화기암 기질 해체 및 전이/악액질 제어", "Milestone (Phase)": "M1. 다기원 오믹스 기반 종양 아형 정의 및 타깃 확정", "Task — Specific Experiments (Bullet Points)": "• TCGA + GTEx + GEO 데이터셋 분석을 통한 ALK7 핵심 타겟 확정\n• 간암 Hoshida S1-3 및 췌장암 Classical·Basal 분류 상관성 규명", "담당 PI 연구팀": "김명석, 김원규", "Timeline": "Y1-Q1~Q2"},
-        {"Epic ID": "EP-EG2", "Epic (Project)": "소화기암 기질 해체 및 전이/악액질 제어", "Milestone (Phase)": "M2. AI 기반 가상 스크리닝 5단계 파이프라인 가동", "Task — Specific Experiments (Bullet Points)": "• NPI Finder 23,000종 + FDA 약물 대상 ALK7 알로스테릭 cavity 도킹 시뮬레이션\n• ΔG < -8.5 및 ΔΔG < -1.5 kcal/mol 필터링 기준 true hits 도출", "담당 PI 연구팀": "김명석", "Timeline": "Y1-Q2~Q3"},
-        {"Epic ID": "EP-EG3", "Epic (Project)": "면역노화 진단 바이오마커 개발 (Ets1)", "Milestone (Phase)": "M1. Ets1 저하 T세포 노화/고갈 표현형 프로파일링", "Task — Specific Experiments (Bullet Points)": "• Ets1 결핍 시 CD127(생존 항상성) 급감 분석 및 면역관문(PD-1, TIGIT) 축적 분석\n• Th17 편향 비가역적 면역노화 임계 지점 정의", "담당 PI 연구팀": "이충구", "Timeline": "Y1-Q1~Q2"}
+        {
+            "Epic ID": "EP-EG1", 
+            "Epic (Project)": "노화 대식세포 표적 황반변성 치료제", 
+            "Milestone (Phase)": "M1. AI/구조 기반 안질환 표적 분석 및 1차 후보물질 우선순위화", 
+            "Task — Specific Experiments (Bullet Points)": "• KIST 고유 천연물 라이브러리(자생 1,160종 / 생약 372종 / 버섯 118종) 빅데이터 큐레이션 및 MerTK/AXL/TYRO3/SARM1 단백질의 3차원 포켓 적합성 가상 스크리닝(NPI Finder + Agentic AI).\n• 위양성 배제 및 1차 우선 검증 화합물 도출.", 
+            "담당 PI 연구팀": "이욱빈, 최용수", 
+            "Timeline": "Y1-Q1~Q2"
+        },
+        {
+            "Epic ID": "EP-EG1", 
+            "Epic (Project)": "노화 대식세포 표적 황반변성 치료제", 
+            "Milestone (Phase)": "M2. In vitro 세포 수준 병리기전 및 다중 타겟 평가 모델 구축", 
+            "Task — Specific Experiments (Bullet Points)": "• 인간 망막색소상피 세포주(ARPE-19) Doxorubicin 노화 유도를 통한 SA-β-gal 활성 및 SASP(IL-6, IL-8, MCP-1) qPCR 프로파일링 시스템 구축.\n• THP-1 및 BV2 미세아교세포 기반 노화 모델 구축을 통한 Senolytic/Efferocytosis 이중 스크리닝 플랫폼 구축.\n• R28 망막 신경세포주 흥분독성(Glutamate) 및 지질과산화(4-HNE) 유발 ROS/미토콘드리아 기능 평가 모델 구축.", 
+            "담당 PI 연구팀": "최용수, 강석우", 
+            "Timeline": "Y1-Q2~Q3"
+        },
+        {
+            "Epic ID": "EP-EG1", 
+            "Epic (Project)": "노화 대식세포 표적 황반변성 치료제", 
+            "Milestone (Phase)": "M3. 후안부 도달 장벽 극복형 첨단 약물 전달체 기초 설계", 
+            "Task — Specific Experiments (Bullet Points)": "• 박막 수화법(Thin-film hydration) 및 고압 유화기를 활용한 80~120nm 균일 이온화 지질 리포좀 합성.\n• 능동 약물 탑재 공정 변수 초기 설계 및 식물 유래 항염증 엑소좀 고순도 정제 공정 확립.", 
+            "담당 PI 연구팀": "강석우", 
+            "Timeline": "Y1-Q3~Q4"
+        },
+        {
+            "Epic ID": "EP-EG1", 
+            "Epic (Project)": "노화 대식세포 표적 황반변성 치료제", 
+            "Milestone (Phase)": "M4. 노화 기반 안질환 동물모델 SOP 수립 및 병리 표현형 규명", 
+            "Task — Specific Experiments (Bullet Points)": "• NaIO₃ 건성 황반변성(AMD) 마우스 모델 구축 및 망막 분리 scRNA-seq 단일세포 전사체 분석.\n• 병리성 대식세포 DAM(Disease-Associated Microglia) 서브클러스터 동정 및 Efferocytosis 기능 저하 수용체 상호작용 맵핑.", 
+            "담당 PI 연구팀": "이욱빈, 최용수", 
+            "Timeline": "Y1-Q3~Y1-Q4"
+        },
+        {
+            "Epic ID": "EP-EG2", 
+            "Epic (Project)": "소화기암 기질 해체 및 전이/악액질 제어", 
+            "Milestone (Phase)": "M1. 다기원 오믹스 기반 종양 아형 정의 및 타깃 확정", 
+            "Task — Specific Experiments (Bullet Points)": "• TCGA/ICGC/GEO 데이터셋 통합 분석을 통한 간암·췌장암의 ALK7 및 TGF-β 의존성 하위 아형 정의.\n• 전이 및 치료 저항성과 직결된 종양 아형별 예후 인자 분석 및 악액질 핵심 수용체 도메인 확정.", 
+            "담당 PI 연구팀": "김명석, 김원규", 
+            "Timeline": "Y1-Q1~Q2"
+        },
+        {
+            "Epic ID": "EP-EG2", 
+            "Epic (Project)": "소화기암 기질 해체 및 전이/악액질 제어", 
+            "Milestone (Phase)": "M2. AI-구조 융합 가상 스크리닝 5단계 파이프라인 가동", 
+            "Task — Specific Experiments (Bullet Points)": "• FDA 승인 약물 및 NPI Finder 23,000종 화합물 대상 AlphaFold2 예측 ALK7 특이적 알로스테릭 유사 포켓 도킹 시뮬레이션 및 분자동역학(MD) 스크리닝.\n• PAINS 필터링을 적용한 true hits 검출.", 
+            "담당 PI 연구팀": "김명석", 
+            "Timeline": "Y1-Q2~Q3"
+        },
+        {
+            "Epic ID": "EP-EG2", 
+            "Epic (Project)": "소화기암 기질 해체 및 전이/악액질 제어", 
+            "Milestone (Phase)": "M3. In vitro 탐색 플랫폼 조건 확립 및 유효 물질 검증", 
+            "Task — Specific Experiments (Bullet Points)": "• TGF-β 하위 신호전달(Smad2/3, MAPK, Rho/ROCK) 및 YAP/TAZ 활성 억제능 평가.\n• 췌장암/간암 HTS 3D invasion assay 확립.\n• T세포 내 ALK7-Smad2/3 경로의 직접 면역회피 제어 기전(Anti-PD-L1 감작) 검증.", 
+            "담당 PI 연구팀": "김원규, 김명석", 
+            "Timeline": "Y1-Q3~Q4"
+        },
+        {
+            "Epic ID": "EP-EG2", 
+            "Epic (Project)": "소화기암 기질 해체 및 전이/악액질 제어", 
+            "Milestone (Phase)": "M4. TME 기질 모사 Niche 조절 및 악액질 기초 모델 구축", 
+            "Task — Specific Experiments (Bullet Points)": "• 스트레스 유도 BM-MSC(골수유래 줄기세포) 노화 모델 구축 및 SASP 인자 정량 분석.\n• 췌장암 CAF(암연관섬유아세포) 공동 배양 시스템 수립을 통한 기질 밀도 조절능 평가 및 skeletal muscle c2c12 악액질 결합 어세이 구축.", 
+            "담당 PI 연구팀": "김명석", 
+            "Timeline": "Y1-Q3~Q4"
+        },
+        {
+            "Epic ID": "EP-EG3", 
+            "Epic (Project)": "면역노화 진단 바이오마커 개발", 
+            "Milestone (Phase)": "M1. Ets1 저하 T세포 노화/고갈 표현형 프로파일링", 
+            "Task — Specific Experiments (Bullet Points)": "• T세포 만성 자극에 따른 Ets1 발현 추적.\n• Ets1 결핍 시 유도되는 CD127(생존 항상성) 급감 정량화.\n• 면역관문(PD-1, TIGIT, TIM-3) 및 노화 마커(CD57, CD28-, KLRG-1)의 세포 표면 축적 양상 분석.", 
+            "담당 PI 연구팀": "이충구", 
+            "Timeline": "Y1-Q1~Q2"
+        },
+        {
+            "Epic ID": "EP-EG3", 
+            "Epic (Project)": "면역노화 진단 바이오마커 개발", 
+            "Milestone (Phase)": "M2. 면역노화 핵심 조절 인자 Ets1 기능적 타당성 규명", 
+            "Task — Specific Experiments (Bullet Points)": "• 흉선 위축 및 나이브 T세포 감소와 Ets1 발현 상관관계 분석.\n• Ets1 N-말단(Thr38 인산화) p300/CBP 아세틸화 스캐폴드 결합성 검증 및 C-말단 RFWD2 결합 유비퀴틴화 분해 경로 기전 탐색.", 
+            "담당 PI 연구팀": "이충구", 
+            "Timeline": "Y1-Q2~Q3"
+        },
+        {
+            "Epic ID": "EP-EG3", 
+            "Epic (Project)": "면역노화 진단 바이오마커 개발", 
+            "Milestone (Phase)": "M3. Ets1 타겟 후보물질 가상 스크리닝 및 Discovery 전략 수립", 
+            "Task — Specific Experiments (Bullet Points)": "• NPI Finder 빅데이터 플랫폼 및 Agentic AI를 연동한 Ets1-크로마틴 결합 3D 구조 분석.\n• Ets1 활성화 및 안정화를 유도하는 저분자 화합물 In silico 1차 스크리닝 착수 및 ADMET/PAINS 위양성 필터링.", 
+            "담당 PI 연구팀": "이충구, 김원규", 
+            "Timeline": "Y1-Q3~Q4"
+        },
+        {
+            "Epic ID": "EP-EG3", 
+            "Epic (Project)": "면역노화 진단 바이오마커 개발", 
+            "Milestone (Phase)": "M4. dLck-cre T세포 특이적 Ets1 결핍 In vivo 시스템 설계", 
+            "Task — Specific Experiments (Bullet Points)": "• Distal Lck promoter (dLck-cre) Ets1ΔdLck T세포 특이적 결핍 마우스 교배 및 표현형 분석 시나리오 설계.\n• 4개월령(청년군) 대비 16개월령(자연 노화군) 마우스 비장 내 나이브/메모리 T세포 풀의 유세포분석(FACS) 프로토콜 설계.", 
+            "담당 PI 연구팀": "이충구", 
+            "Timeline": "Y1-Q3~Y1-Q4"
+        }
     ]
 }
 
@@ -310,7 +425,7 @@ if "대시보드 총괄" in menu_selection:
             <h3>👁️ EP-EG1: 황반변성 치료제 개발</h3>
             <p style='color: #cbd5e1; font-size: 14px;'>주관: 이욱빈 박사팀</p>
             <div style='font-size: 26px; font-weight: 800; color: #2dd4bf; margin: 10px 0;'>대기상태 (0% / 1차년도)</div>
-            <p style='color: #cbd5e1; font-size: 13px; line-height:1.5;'>• 5년차 EP: 28일 독성 수립 및 휴온스바이오파마 권리 이전<br>• 핵심 타겟: SARM1, TAM axis<br>• 현황: 올해 8월 연구 개시 준비 단계</p>
+            <p style='color: #cbd5e1; font-size: 13px; line-height:1.5;'>• 5년차 EP: 28일 반복 투여 독성(안전성) 완료, IND-ready 패키지 완성 및 기술이전<br>• 핵심 타겟: SARM1, TAM axis (MerTK/AXL/TYRO3)<br>• 현황: 천연물 라이브러리 가상 스크리닝(NPI Finder + Agentic AI) 대기</p>
         </div>
         """, unsafe_allow_html=True)
     with col_ep2:
@@ -319,7 +434,7 @@ if "대시보드 총괄" in menu_selection:
             <h3>🧬 EP-EG2: 소화기암 전이/악액질 극복</h3>
             <p style='color: #cbd5e1; font-size: 14px;'>주관: 김명석 박사팀</p>
             <div style='font-size: 26px; font-weight: 800; color: #2dd4bf; margin: 10px 0;'>대기상태 (0% / 1차년도)</div>
-            <p style='color: #cbd5e1; font-size: 13px; line-height:1.5;'>• 5년차 EP: GLP 독성 완료 및 글로벌 L/O 데이터룸 발간<br>• 핵심 타겟: ALK7 도메인 이원화<br>• 현황: 중앙 라이브러리 및 3D 칩 설계 설계 대기</p>
+            <p style='color: #cbd5e1; font-size: 13px; line-height:1.5;'>• 5년차 EP: Pre-IND 패키지 eCTD 규격화 완결, L/O Factbook 발간 및 글로벌 기술이전<br>• 핵심 타겟: ALK7 알로스테릭 포켓, TME 기질 장벽<br>• 현황: 다기원 오믹스 기반 암 아형 정의 및 AlphaFold2 구조 모델링 대기</p>
         </div>
         """, unsafe_allow_html=True)
     with col_ep3:
@@ -328,7 +443,7 @@ if "대시보드 총괄" in menu_selection:
             <h3>🩸 EP-EG3: 면역노화 진단 바이오마커</h3>
             <p style='color: #cbd5e1; font-size: 14px;'>주관: 이충구 박사팀</p>
             <div style='font-size: 26px; font-weight: 800; color: #2dd4bf; margin: 10px 0;'>대기상태 (0% / 1차년도)</div>
-            <p style='color: #cbd5e1; font-size: 13px; line-height:1.5;'>• 5년차 EP: ML 경구 BA 예측 및 특허 청구항 강력 IP 장벽<br>• 핵심 타겟: Ets1, dLck-cre<br>• 현황: dLck-cre 모델 수립 및 ATAC 프로토콜 설계 대기</p>
+            <p style='color: #cbd5e1; font-size: 13px; line-height:1.5;'>• 5년차 EP: Ets1 조절 비임상 안전성 검증, 용도 특허 확보 및 조기 L/O 패키징 완결<br>• 핵심 타겟: Ets1 전사인자, dLck-cre 마우스 모델<br>• 현황: dLck-cre 결핍 마우스 교배 시나리오 및 T세포 노화 프로파일링 설계 대기</p>
         </div>
         """, unsafe_allow_html=True)
 
