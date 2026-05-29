@@ -184,10 +184,25 @@ def render_badge(status):
     elif status == "진행중":
         bg_col, txt_col = "#1e3a8a", "#bfdbfe"
     elif status == "대기":
-        bg_col, txt_col = "#374151", "#cbd5e1"
+        bg_col, txt_col = "#1e293b", "#f1f5f9"  # High-contrast slate blue with off-white text
     else:
         bg_col, txt_col = "#7f1d1d", "#fecdd3"
+    
+    if status == "대기":
+        return f'<span style="background-color: {bg_col}; color: {txt_col}; padding: 5px 14px; border-radius: 20px; font-weight: 800; font-size: 12px; border: 1px solid #475569; letter-spacing: 0.5px;">{status}</span>'
     return f'<span style="background-color: {bg_col}; color: {txt_col}; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 12px; border: 1px solid {txt_col}40;">{status}</span>'
+
+def get_epic_badge(epic_id):
+    """Generates a highly-stylized visual badge for subtasks based on Epic ID (EP-EG1, EP-EG2, EP-EG3)"""
+    if "EP-EG1" in epic_id:
+        bg, fg = "#0b253a", "#38bdf8"  # Slate Blue-Cyan contrast
+    elif "EP-EG2" in epic_id:
+        bg, fg = "#3b122d", "#f472b6"  # Deep Plum-Pink contrast
+    elif "EP-EG3" in epic_id:
+        bg, fg = "#062f22", "#34d399"  # Emerald Green contrast
+    else:
+        bg, fg = "#1e293b", "#cbd5e1"
+    return f'<span style="background-color: {bg}; color: {fg}; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 12px; border: 1px solid {fg}40; font-family: monospace; letter-spacing: 0.5px;">{epic_id}</span>'
 
 def tooltip(term, definition):
     """Generates an embedded custom tooltip anchor."""
@@ -353,17 +368,47 @@ elif "세부과제별 파이프라인" in menu_selection:
             if not task_text or "Task" in str(task_text) or "Data Source" in str(task_text):
                 continue
                 
+            # Clean up the Year string display (e.g. Y1_1차년도 -> 1차년도 (Year 1))
+            parts = s_name.replace("Y", "").split("_")
+            y_display = f"{parts[1]} (Year {parts[0]})" if len(parts) >= 2 else s_name.replace("Y", "Year ").replace("_", " ")
+            
+            # Format raw specific task bullets to clean styling and auto-link custom biotech tooltips
+            task_html = ""
+            for item in str(task_text).split("\n"):
+                item = item.strip()
+                if not item:
+                    continue
+                if item.startswith("•"):
+                    clean_item = item.replace("•", "").strip()
+                    # Auto-inject hover tooltips for biotech terminology
+                    for term, definition in dict_tooltip.items():
+                        if term in clean_item:
+                            clean_item = clean_item.replace(term, tooltip(term, definition))
+                    task_html += f"<div style='margin-bottom: 8px; padding-left: 10px; border-left: 2px solid #2dd4bf; line-height: 1.6;'>• {clean_item}</div>"
+                else:
+                    for term, definition in dict_tooltip.items():
+                        if term in item:
+                            item = item.replace(term, tooltip(term, definition))
+                    task_html += f"<div style='margin-bottom: 8px; line-height: 1.6;'>{item}</div>"
+            
+            # Auto-inject hover tooltips for Milestone phase too
+            milestone_text = r.get("Milestone (Phase)", "") or r.get("Unnamed: 2", "")
+            for term, definition in dict_tooltip.items():
+                if term in milestone_text:
+                    milestone_text = milestone_text.replace(term, tooltip(term, definition))
+
             row_data = {
-                "연차": s_name.replace("Y", "Year ").replace("_", " "),
+                "연차": y_display,
                 "Epic ID": r.get("Epic ID", "") or r.get("에버그린 프로젝트 1차년도 (Year 1) — Epic → Milestone → Task", ""),
-                "Milestone": r.get("Milestone (Phase)", "") or r.get("Unnamed: 2", ""),
-                "세부 실험 Task": str(task_text).replace("\n", "<br>"),
+                "Milestone": milestone_text,
+                "세부 실험 Task": task_html,
                 "일정": r.get("Timeline", "") or r.get("Unnamed: 5", ""),
                 "상태": "대기"
             }
             
             if search_q:
-                row_str = " ".join([str(v) for v in row_data.values()]).lower()
+                # Include task text search
+                row_str = " ".join([str(v) for v in [row_data["연차"], row_data["Epic ID"], row_data["Milestone"], task_text, row_data["일정"]]]).lower()
                 if search_q.lower() in row_str:
                     rows.append(row_data)
             else:
@@ -375,10 +420,10 @@ elif "세부과제별 파이프라인" in menu_selection:
         <table class="fixed-header-table">
             <thead>
                 <tr>
-                    <th style="width: 10%;">연차</th>
-                    <th style="width: 10%;">과제 ID</th>
-                    <th style="width: 25%;">마일스톤 (Phase)</th>
-                    <th style="width: 40%;">세부 실험 Task (Specific Experiments)</th>
+                    <th style="width: 12%;">연차</th>
+                    <th style="width: 12%;">과제 ID</th>
+                    <th style="width: 23%;">마일스톤 (Phase)</th>
+                    <th style="width: 38%;">세부 실험 Task (Specific Experiments)</th>
                     <th style="width: 10%;">일정</th>
                     <th style="width: 5%;">상태</th>
                 </tr>
@@ -388,11 +433,11 @@ elif "세부과제별 파이프라인" in menu_selection:
         for r_data in rows:
             table_html += f"""
                 <tr>
-                    <td><b>{r_data['연차']}</b></td>
-                    <td><span style="color: #2dd4bf; font-weight: 700;">{r_data['Epic ID']}</span></td>
-                    <td><b>{r_data['Milestone']}</b></td>
-                    <td style="color: #e2e8f0; font-size: 14px;">{r_data['세부 실험 Task']}</td>
-                    <td><code>{r_data['일정']}</code></td>
+                    <td><b style="color: #f8fafc; font-size: 14px;">{r_data['연차']}</b></td>
+                    <td>{get_epic_badge(r_data['Epic ID'])}</td>
+                    <td><b style="color: #e2e8f0; font-size: 14px;">{r_data['Milestone']}</b></td>
+                    <td style="color: #cbd5e1; font-size: 13.5px; padding: 12px 16px;">{r_data['세부 실험 Task']}</td>
+                    <td><code style="background-color: #1e293b; color: #38bdf8; padding: 4px 8px; border-radius: 4px; border: 1px solid #334155; font-weight: 600;">{r_data['일정']}</code></td>
                     <td>{render_badge(r_data['상태'])}</td>
                 </tr>
             """
