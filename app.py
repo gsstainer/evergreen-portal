@@ -96,6 +96,57 @@ st.markdown("""
         color: #ffffff !important;
     }
     
+    /* ---------------------------------------------------------
+     * 🧭 Premium Sidebar Navigation & GNB Custom Card Overrides
+     * --------------------------------------------------------- */
+    [data-testid="stSidebar"] {
+        background-color: #0f172a !important;
+        border-right: 1px solid #1e293b !important;
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #ffffff !important;
+    }
+    
+    /* Transform standard radio buttons into beautiful glowing navigation cards */
+    [data-testid="stSidebar"] div[role="radiogroup"] label {
+        padding: 12px 16px !important;
+        border-radius: 8px !important;
+        background-color: #1e293b !important;
+        margin-bottom: 8px !important;
+        border: 1px solid #334155 !important;
+        transition: all 0.2s ease-in-out !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    [data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+        background-color: #155e75 !important;
+        border-color: #2dd4bf !important;
+    }
+    
+    /* Highlight state for the selected radio card button */
+    [data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {
+        background-color: #0e7490 !important;
+        border-color: #2dd4bf !important;
+        box-shadow: 0 0 12px rgba(45, 212, 191, 0.4) !important;
+    }
+    
+    /* Hide native radio circles inside sidebar to keep only the beautiful cards */
+    [data-testid="stSidebar"] div[role="radiogroup"] label span[data-baseweb="radio"] {
+        display: none !important;
+    }
+    
+    /* GNB Header Styling */
+    [data-testid="stSidebar"] div[data-testid="stMarkdownContainer"] p {
+        color: #38bdf8 !important;
+        font-weight: 800 !important;
+        font-size: 16px !important;
+        letter-spacing: 0.5px !important;
+        margin-bottom: 12px !important;
+    }
+    
     /* Typography Scannability Contrast */
     h1 {
         font-size: 34px;
