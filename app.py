@@ -470,14 +470,40 @@ if "pipeline_db" not in st.session_state:
 
 # Initialize Session State for Blockers (Lab Sync) to enable dynamic additions & modifications
 if "blockers_db" not in st.session_state:
-    mock_blockers = [
+    st.session_state.blockers_db = {}
+    
+    # Prepopulate Year 1 (1차년도) blockers with premium examples
+    y1_blockers = [
         {"과제 ID": "EP-EG1", "담당 PI/연구팀": "1세부 공동연구팀", "블로커 및 사전 조율 안건": "유리체 약산성(pH 5.5) 감응형 PEG-리포좀 3-Batch 봉입 프로토콜 사전 확립 지연", "상태 (Status)": "대기", "예상 해결일": "2026-08-01"},
         {"과제 ID": "EP-EG2", "담당 PI/연구팀": "2세부 공동연구팀", "블로커 및 사전 조율 안건": "췌장암 기질 해체 평가용 hu-HSC PDX 마우스 공급망 및 8월 입고 일정 사전 조율", "상태 (Status)": "대기", "예상 해결일": "2026-08-01"},
         {"과제 ID": "EP-EG3", "담당 PI/연구팀": "3세부 공동연구팀", "블로커 및 사전 조율 안건": "dLck-cre 마우스의 자연노화(16개월령) 개체군 후성유전 ATAC-seq 분석 시나리오 준비", "상태 (Status)": "대기", "예상 해결일": "2026-08-01"},
         {"과제 ID": "EP-EG1", "담당 PI/연구팀": "1세부 공동연구팀", "블로커 및 사전 조율 안건": "AMD 건성/습성 동물모델 SOP 수립을 위한 NaIO₃ 정맥투여 적정 농도 2차 검증 필요", "상태 (Status)": "대기", "예상 해결일": "2026-08-01"},
         {"과제 ID": "EP-EG2", "담당 PI/연구팀": "2세부 공동연구팀", "블로커 및 사전 조율 안건": "ALK7 알로스테릭 포켓 스크리닝 true hits 선별용 AlphaFold2 3D 가상 도킹 인프라 리소스 확보", "상태 (Status)": "대기", "예상 해결일": "2026-08-01"}
     ]
-    st.session_state.blockers_db = pd.DataFrame(mock_blockers)
+    st.session_state.blockers_db["Y1_1차년도"] = pd.DataFrame(y1_blockers)
+    
+    # Prepopulate other years with realistic academic-grade placeholders
+    st.session_state.blockers_db["Y2_2차년도"] = pd.DataFrame([
+        {"과제 ID": "EP-EG1", "담당 PI/연구팀": "1세부 공동연구팀", "블로커 및 사전 조율 안건": "각막 투과성 평가용 Franz diffusion cell 및 동적 유체 라인 셋업 지연 해결 필요", "상태 (Status)": "대기", "예상 해결일": "2027-02-15"},
+        {"과제 ID": "EP-EG2", "담당 PI/연구팀": "2세부 공동연구팀", "블로커 및 사전 조율 안건": "3D Tumor-Stroma on a chip 미세 유체 제어 표준 유속 설정 검증", "상태 (Status)": "대기", "예상 해결일": "2027-03-10"},
+        {"과제 ID": "EP-EG3", "담당 PI/연구팀": "3세부 공동연구팀", "블로커 및 사전 조율 안건": "dLck-cre Ets1Δ/Δ 마우스 F1 세대 유전형(Genotyping) PCR 검증 프로토콜 확립", "상태 (Status)": "대기", "예상 해결일": "2027-04-05"}
+    ])
+    st.session_state.blockers_db["Y3_3차년도"] = pd.DataFrame([
+        {"과제 ID": "EP-EG1", "담당 PI/연구팀": "1세부 공동연구팀", "블로커 및 사전 조율 안건": "환자 유래 망막 오가노이드(KRIBB 협력) 품질 관리 규격 및 세포 생존도 확인 검증", "상태 (Status)": "대기", "예상 해결일": "2028-01-20"},
+        {"과제 ID": "EP-EG2", "담당 PI/연구팀": "2세부 공동연구팀", "블로커 및 사전 조율 안건": "동소이식 및 전이 마우스 모델 생체 이미징 및 mOS 추적 장비 예약 조율", "상태 (Status)": "대기", "예상 해결일": "2028-02-15"},
+        {"과제 ID": "EP-EG3", "담당 PI/연구팀": "3세부 공동연구팀", "블로커 및 사전 조율 안건": "ChIP-seq 시퀀싱 라이브러리 제작 및 Smarce1/Smarcc1 항체 특이성 검증", "상태 (Status)": "대기", "예상 해결일": "2028-03-30"}
+    ])
+    st.session_state.blockers_db["Y4_4차년도"] = pd.DataFrame([
+        {"과제 ID": "EP-EG1", "담당 PI/연구팀": "1세부 공동연구팀", "블로커 및 사전 조율 안건": "유리체강 내 주사 vs 점안 투여 맹검(Blind) 비교 연구를 위한 동물 행동 및 통증 프로토콜 수립", "상태 (Status)": "대기", "예상 해결일": "2029-01-15"},
+        {"과제 ID": "EP-EG2", "담당 PI/연구팀": "2세부 공동연구팀", "블로커 및 사전 조율 안건": "접선유동여과(TFF) 공정을 활용한 나노 전달체 합성 스케일업 공정성 확보", "상태 (Status)": "대기", "예상 해결일": "2029-02-28"},
+        {"과제 ID": "EP-EG3", "담당 PI/연구팀": "3세부 공동연구팀", "블로커 및 사전 조율 안건": "SCENIC/GRN 계산생물학 알고리즘 가동을 위한 고성능 클러스터 메모리 증설", "상태 (Status)": "대기", "예상 해결일": "2029-04-10"}
+    ])
+    st.session_state.blockers_db["Y5_5차년도"] = pd.DataFrame([
+        {"과제 ID": "EP-EG1", "담당 PI/연구팀": "1세부 공동연구팀", "블로커 및 사전 조율 안건": "Pre-IND eCTD 양식 작성 및 규제기관(식약처/FDA) 미팅 지원용 문서화 포맷 통일", "상태 (Status)": "대기", "예상 해결일": "2030-01-20"},
+        {"과제 ID": "EP-EG2", "담당 PI/연구팀": "2세부 공동연구팀", "블로커 및 사전 조율 안건": "나노 DDS 제형 대량 제조 공정의 배치 간 재현성(Batch-to-Batch reproducibility) 문서화", "상태 (Status)": "대기", "예상 해결일": "2030-02-15"},
+        {"과제 ID": "EP-EG3", "담당 PI/연구팀": "3세부 공동연구팀", "블로커 및 사전 조율 안건": "Ets1 조절 최종 선도물질의 신규 용도 및 조성물 특허 청구항 권리범위 최종 조율", "상태 (Status)": "대기", "예상 해결일": "2030-03-10"}
+    ])
+
 
 # ---------------------------------------------------------
 # [1. Navigation GNB Sidebar - 3-Click Rule]
@@ -836,53 +862,99 @@ elif "랩 미팅" in menu_selection:
     st.markdown(f"다기관 PI 공동연구진의 주간 안건 및 병목 구간입니다. {tooltip('4-HNE', dict_tooltip['4-HNE'])} 독성 해소, {tooltip('H3K27me3', dict_tooltip['H3K27me3'])} 잠금장치 복원 등 랩 논의 안건이 투명하게 개방되며 실시간 추가/편집이 지원됩니다.", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Blocker Toggle Switch
-    col_b1, col_b2 = st.columns([3, 1])
-    with col_b1:
-        st.subheader("🚨 공동 연구팀 병목(Blocker) 현황 (과제 개시 전 준비)")
-    with col_b2:
+    # 5-Year Navigation & Mode Switch for Blockers
+    col_b_nav1, col_b_nav2 = st.columns([3, 1])
+    with col_b_nav1:
+        selected_blocker_year = st.selectbox(
+            "📅 연차별 병목 필터링",
+            ["All (5개년 전체)", "1차년도 (Year 1)", "2차년도 (Year 2)", "3차년도 (Year 3)", "4차년도 (Year 4)", "5차년도 (Year 5)"],
+            key="blocker_year_select"
+        )
+    with col_b_nav2:
         blocker_edit = st.toggle("🔓 블로커 실시간 편집 활성화", value=False, key="blocker_edit_toggle")
+
+    # Map selected blocker year to sheet keys
+    blocker_year_map = {
+        "All (5개년 전체)": ["Y1_1차년도", "Y2_2차년도", "Y3_3차년도", "Y4_4차년도", "Y5_5차년도"],
+        "1차년도 (Year 1)": ["Y1_1차년도"],
+        "2차년도 (Year 2)": ["Y2_2차년도"],
+        "3차년도 (Year 3)": ["Y3_3차년도"],
+        "4차년도 (Year 4)": ["Y4_4차년도"],
+        "5차년도 (Year 5)": ["Y5_5차년도"]
+    }
+    target_blocker_sheets = blocker_year_map[selected_blocker_year]
 
     # --- Mode 1: Interactive Data Editor ---
     if blocker_edit:
-        st.info("💡 **블로커 실시간 편집 모드**: 표 내부의 셀을 더블클릭하여 수정하거나, 표 최하단의 `+ Add row` 버튼을 클릭하여 행을 추가할 수 있습니다. 수정한 후 우측 토글을 끄면 HSL 고대비 완성본으로 렌더링됩니다.")
-        edited_blockers = st.data_editor(
-            st.session_state.blockers_db,
-            use_container_width=True,
-            num_rows="dynamic",
-            key="blocker_data_editor",
-            column_config={
-                "과제 ID": st.column_config.SelectboxColumn("과제 ID", options=["EP-EG1", "EP-EG2", "EP-EG3"], required=True),
-                "담당 PI/연구팀": st.column_config.TextColumn("담당 PI/연구팀", width="medium"),
-                "블로커 및 사전 조율 안건": st.column_config.TextColumn("블로커 및 사전 조율 안건", width="large"),
-                "상태 (Status)": st.column_config.SelectboxColumn("상태 (Status)", options=["대기", "진행중", "완료"], required=True),
-                "예상 해결일": st.column_config.TextColumn("예상 해결일", width="small")
-            }
-        )
-        st.session_state.blockers_db = edited_blockers
+        st.info("💡 **블로커 실시간 편집 모드**: 표 내부의 셀을 더블클릭하여 자유롭게 수정하거나, 표 최하단의 `+ Add row` 버튼을 클릭하여 행을 추가할 수 있습니다. 수정한 뒤 좌측의 'All (5개년 전체)' 필터를 변경하거나 편집 모드를 끄면 고대비 완성본으로 렌더링됩니다.")
+        
+        if selected_blocker_year == "All (5개년 전체)":
+            tab_names = ["1차년도", "2차년도", "3차년도", "4차년도", "5차년도"]
+            tabs = st.tabs(tab_names)
+            for idx, key in enumerate(target_blocker_sheets):
+                with tabs[idx]:
+                    df_b = st.session_state.blockers_db[key]
+                    edited_df_b = st.data_editor(
+                        df_b,
+                        use_container_width=True,
+                        num_rows="dynamic",
+                        key=f"blocker_editor_{key}",
+                        column_config={
+                            "과제 ID": st.column_config.SelectboxColumn("과제 ID", options=["EP-EG1", "EP-EG2", "EP-EG3"], required=True),
+                            "담당 PI/연구팀": st.column_config.TextColumn("담당 PI/연구팀", width="medium"),
+                            "블로커 및 사전 조율 안건": st.column_config.TextColumn("블로커 및 사전 조율 안건", width="large"),
+                            "상태 (Status)": st.column_config.SelectboxColumn("상태 (Status)", options=["대기", "진행중", "완료"], required=True),
+                            "예상 해결일": st.column_config.TextColumn("예상 해결일", width="small")
+                        }
+                    )
+                    st.session_state.blockers_db[key] = edited_df_b
+        else:
+            key = target_blocker_sheets[0]
+            df_b = st.session_state.blockers_db[key]
+            edited_df_b = st.data_editor(
+                df_b,
+                use_container_width=True,
+                num_rows="dynamic",
+                key=f"blocker_editor_single_{key}",
+                column_config={
+                    "과제 ID": st.column_config.SelectboxColumn("과제 ID", options=["EP-EG1", "EP-EG2", "EP-EG3"], required=True),
+                    "담당 PI/연구팀": st.column_config.TextColumn("담당 PI/연구팀", width="medium"),
+                    "블로커 및 사전 조율 안건": st.column_config.TextColumn("블로커 및 사전 조율 안건", width="large"),
+                    "상태 (Status)": st.column_config.SelectboxColumn("상태 (Status)", options=["대기", "진행중", "완료"], required=True),
+                    "예상 해결일": st.column_config.TextColumn("예상 해결일", width="small")
+                }
+            )
+            st.session_state.blockers_db[key] = edited_df_b
 
     # --- Mode 2: Premium Visual Table ---
     else:
         b_table = """<table class="fixed-header-table">
 <thead>
 <tr>
+<th style="width: 12%;">연차</th>
 <th style="width: 12%;">과제 ID</th>
 <th style="width: 18%;">담당 PI/연구팀</th>
-<th style="width: 50%;">블로커 및 사전 조율 안건</th>
+<th style="width: 43%;">블로커 및 사전 조율 안건</th>
 <th style="width: 10%;">상태 (Status)</th>
 <th style="width: 10%;">예상 해결일</th>
 </tr>
 </thead>
 <tbody>"""
-        for idx, row in st.session_state.blockers_db.iterrows():
-            blocker_text = str(row.get("블로커 및 사전 조율 안건", ""))
+        for s_name in target_blocker_sheets:
+            df_b = st.session_state.blockers_db[s_name]
+            parts = s_name.replace("Y", "").split("_")
+            y_display = f"{parts[1]} (Year {parts[0]})" if len(parts) >= 2 else s_name.replace("Y", "Year ").replace("_", " ")
             
-            # Auto-inject hover tooltips for biotech terms inside blocker descriptions
-            for term, definition in dict_tooltip.items():
-                if term in blocker_text:
-                    blocker_text = blocker_text.replace(term, tooltip(term, definition))
-            
-            b_table += f"""<tr>
+            for idx, row in df_b.iterrows():
+                blocker_text = str(row.get("블로커 및 사전 조율 안건", ""))
+                
+                # Auto-inject hover tooltips for biotech terms inside blocker descriptions
+                for term, definition in dict_tooltip.items():
+                    if term in blocker_text:
+                        blocker_text = blocker_text.replace(term, tooltip(term, definition))
+                
+                b_table += f"""<tr>
+<td><b style="color: #f8fafc; font-size: 14px;">{y_display}</b></td>
 <td>{get_epic_badge(row.get('과제 ID', ''))}</td>
 <td><b style="color: #f8fafc; font-size: 14px;">{row.get('담당 PI/연구팀', '')}</b></td>
 <td style="color: #cbd5e1; font-size: 13.5px; padding: 12px 16px;">{blocker_text}</td>
