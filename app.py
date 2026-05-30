@@ -468,6 +468,17 @@ if "pipeline_db" not in st.session_state:
                 })
                 st.session_state.pipeline_db[y] = pd.DataFrame(mock_rows)
 
+# Initialize Session State for Blockers (Lab Sync) to enable dynamic additions & modifications
+if "blockers_db" not in st.session_state:
+    mock_blockers = [
+        {"과제 ID": "EP-EG1", "담당 PI/연구팀": "1세부 공동연구팀", "블로커 및 사전 조율 안건": "유리체 약산성(pH 5.5) 감응형 PEG-리포좀 3-Batch 봉입 프로토콜 사전 확립 지연", "상태 (Status)": "대기", "예상 해결일": "2026-08-01"},
+        {"과제 ID": "EP-EG2", "담당 PI/연구팀": "2세부 공동연구팀", "블로커 및 사전 조율 안건": "췌장암 기질 해체 평가용 hu-HSC PDX 마우스 공급망 및 8월 입고 일정 사전 조율", "상태 (Status)": "대기", "예상 해결일": "2026-08-01"},
+        {"과제 ID": "EP-EG3", "담당 PI/연구팀": "3세부 공동연구팀", "블로커 및 사전 조율 안건": "dLck-cre 마우스의 자연노화(16개월령) 개체군 후성유전 ATAC-seq 분석 시나리오 준비", "상태 (Status)": "대기", "예상 해결일": "2026-08-01"},
+        {"과제 ID": "EP-EG1", "담당 PI/연구팀": "1세부 공동연구팀", "블로커 및 사전 조율 안건": "AMD 건성/습성 동물모델 SOP 수립을 위한 NaIO₃ 정맥투여 적정 농도 2차 검증 필요", "상태 (Status)": "대기", "예상 해결일": "2026-08-01"},
+        {"과제 ID": "EP-EG2", "담당 PI/연구팀": "2세부 공동연구팀", "블로커 및 사전 조율 안건": "ALK7 알로스테릭 포켓 스크리닝 true hits 선별용 AlphaFold2 3D 가상 도킹 인프라 리소스 확보", "상태 (Status)": "대기", "예상 해결일": "2026-08-01"}
+    ]
+    st.session_state.blockers_db = pd.DataFrame(mock_blockers)
+
 # ---------------------------------------------------------
 # [1. Navigation GNB Sidebar - 3-Click Rule]
 # ---------------------------------------------------------
@@ -822,31 +833,64 @@ elif "물질 라이브러리" in menu_selection:
 # ---------------------------------------------------------
 elif "랩 미팅" in menu_selection:
     st.markdown("<h1>📅 랩 미팅 & 실시간 블로커(병목) 트래커</h1>", unsafe_allow_html=True)
-    st.markdown(f"다기관 PI 공동연구진의 주간 안건 및 병목 구간입니다. {tooltip('4-HNE', dict_tooltip['4-HNE'])} 독성 해소, {tooltip('H3K27me3', dict_tooltip['H3K27me3'])} 잠금장치 복원 등 랩 논의 안건이 투명하게 개방됩니다.", unsafe_allow_html=True)
+    st.markdown(f"다기관 PI 공동연구진의 주간 안건 및 병목 구간입니다. {tooltip('4-HNE', dict_tooltip['4-HNE'])} 독성 해소, {tooltip('H3K27me3', dict_tooltip['H3K27me3'])} 잠금장치 복원 등 랩 논의 안건이 투명하게 개방되며 실시간 추가/편집이 지원됩니다.", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    blockers = [
-        {"과제 ID": "EP-EG2", "담당 PI": "김명석 박사", "블로커 내용": "췌장암 기질 해체 평가용 hu-HSC PDX 마우스 공급망 및 8월 입고 일정 사전 조율", "심각도": "대기", "예상해결": "2026-08-01"},
-        {"과제 ID": "EP-EG1", "담당 PI": "최용수 박사", "블로커 내용": "유리체 약산성(pH 5.5) 감응형 PEG-리포좀 3-Batch 봉입 프로토콜 사전 확립", "심각도": "대기", "예상해결": "2026-08-01"},
-        {"과제 ID": "EP-EG3", "담당 PI": "이충구 박사", "블로커 내용": "dLck-cre 마우스의 자연노화(16개월령) 개체군 후성유전 ATAC-seq 분석 시나리오 준비", "심각도": "대기", "예상해결": "2026-08-01"}
-    ]
+    # Blocker Toggle Switch
+    col_b1, col_b2 = st.columns([3, 1])
+    with col_b1:
+        st.subheader("🚨 공동 연구팀 병목(Blocker) 현황 (과제 개시 전 준비)")
+    with col_b2:
+        blocker_edit = st.toggle("🔓 블로커 실시간 편집 활성화", value=False, key="blocker_edit_toggle")
 
-    st.subheader("🚨 공동 연구팀 병목(Blocker) 현황 (과제 개시 전 준비)")
-    b_table = """<table class="fixed-header-table">
+    # --- Mode 1: Interactive Data Editor ---
+    if blocker_edit:
+        st.info("💡 **블로커 실시간 편집 모드**: 표 내부의 셀을 더블클릭하여 수정하거나, 표 최하단의 `+ Add row` 버튼을 클릭하여 행을 추가할 수 있습니다. 수정한 후 우측 토글을 끄면 HSL 고대비 완성본으로 렌더링됩니다.")
+        edited_blockers = st.data_editor(
+            st.session_state.blockers_db,
+            use_container_width=True,
+            num_rows="dynamic",
+            key="blocker_data_editor",
+            column_config={
+                "과제 ID": st.column_config.SelectboxColumn("과제 ID", options=["EP-EG1", "EP-EG2", "EP-EG3"], required=True),
+                "담당 PI/연구팀": st.column_config.TextColumn("담당 PI/연구팀", width="medium"),
+                "블로커 및 사전 조율 안건": st.column_config.TextColumn("블로커 및 사전 조율 안건", width="large"),
+                "상태 (Status)": st.column_config.SelectboxColumn("상태 (Status)", options=["대기", "진행중", "완료"], required=True),
+                "예상 해결일": st.column_config.TextColumn("예상 해결일", width="small")
+            }
+        )
+        st.session_state.blockers_db = edited_blockers
+
+    # --- Mode 2: Premium Visual Table ---
+    else:
+        b_table = """<table class="fixed-header-table">
 <thead>
 <tr>
-<th style="width: 15%;">과제 ID</th>
-<th style="width: 15%;">담당 PI</th>
+<th style="width: 12%;">과제 ID</th>
+<th style="width: 18%;">담당 PI/연구팀</th>
 <th style="width: 50%;">블로커 및 사전 조율 안건</th>
 <th style="width: 10%;">상태 (Status)</th>
 <th style="width: 10%;">예상 해결일</th>
 </tr>
 </thead>
 <tbody>"""
-    for b in blockers:
-        b_table += f"<tr><td><b>{b['과제 ID']}</b></td><td>{b['담당 PI']}</td><td>{b['블로커 내용']}</td><td>{render_badge(b['심각도'])}</td><td><code>{b['예상해결']}</code></td></tr>"
-    b_table += "</tbody></table>"
-    st.markdown(b_table, unsafe_allow_html=True)
+        for idx, row in st.session_state.blockers_db.iterrows():
+            blocker_text = str(row.get("블로커 및 사전 조율 안건", ""))
+            
+            # Auto-inject hover tooltips for biotech terms inside blocker descriptions
+            for term, definition in dict_tooltip.items():
+                if term in blocker_text:
+                    blocker_text = blocker_text.replace(term, tooltip(term, definition))
+            
+            b_table += f"""<tr>
+<td>{get_epic_badge(row.get('과제 ID', ''))}</td>
+<td><b style="color: #f8fafc; font-size: 14px;">{row.get('담당 PI/연구팀', '')}</b></td>
+<td style="color: #cbd5e1; font-size: 13.5px; padding: 12px 16px;">{blocker_text}</td>
+<td>{render_badge(row.get('상태 (Status)', '대기'))}</td>
+<td><code style="background-color: #1e293b; color: #38bdf8; padding: 4px 8px; border-radius: 4px; border: 1px solid #334155; font-weight: 600;">{row.get('예상 해결일', '')}</code></td>
+</tr>"""
+        b_table += "</tbody></table>"
+        st.markdown(b_table, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # 📈 [MENU 5] 행정 매트릭스 (Admin Metrics)
