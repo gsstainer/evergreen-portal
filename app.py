@@ -471,7 +471,7 @@ if "대시보드 총괄" in menu_selection:
         st.markdown(r"""
         <div class="card-wrapper">
             <h3>👁️ EP-EG1: 황반변성 치료제 개발</h3>
-            <p style='color: #cbd5e1; font-size: 14px;'>주관: 이욱빈 박사팀</p>
+            <p style='color: #cbd5e1; font-size: 14px;'>주관: 1세부 공동연구팀</p>
             <div style='font-size: 26px; font-weight: 800; color: #2dd4bf; margin: 10px 0;'>대기상태 (0% / 1차년도)</div>
             <p style='color: #cbd5e1; font-size: 13px; line-height:1.5;'>• 5년차 EP: 28일 반복 투여 독성(안전성) 완료, IND-ready 패키지 완성 및 기술이전<br>• 핵심 타겟: SARM1, TAM axis (MerTK/AXL/TYRO3)<br>• 현황: 천연물 라이브러리 가상 스크리닝(NPI Finder + Agentic AI) 대기</p>
         </div>
@@ -480,7 +480,7 @@ if "대시보드 총괄" in menu_selection:
         st.markdown(r"""
         <div class="card-wrapper">
             <h3>🧬 EP-EG2: 소화기암 전이/악액질 극복</h3>
-            <p style='color: #cbd5e1; font-size: 14px;'>주관: 김명석 박사팀</p>
+            <p style='color: #cbd5e1; font-size: 14px;'>주관: 2세부 공동연구팀</p>
             <div style='font-size: 26px; font-weight: 800; color: #2dd4bf; margin: 10px 0;'>대기상태 (0% / 1차년도)</div>
             <p style='color: #cbd5e1; font-size: 13px; line-height:1.5;'>• 5년차 EP: Pre-IND 패키지 eCTD 규격화 완결, L/O Factbook 발간 및 글로벌 기술이전<br>• 핵심 타겟: ALK7 알로스테릭 포켓, TME 기질 장벽<br>• 현황: 다기원 오믹스 기반 암 아형 정의 및 AlphaFold2 구조 모델링 대기</p>
         </div>
@@ -489,7 +489,7 @@ if "대시보드 총괄" in menu_selection:
         st.markdown(r"""
         <div class="card-wrapper">
             <h3>🩸 EP-EG3: 면역노화 진단 바이오마커</h3>
-            <p style='color: #cbd5e1; font-size: 14px;'>주관: 이충구 박사팀</p>
+            <p style='color: #cbd5e1; font-size: 14px;'>주관: 3세부 공동연구팀</p>
             <div style='font-size: 26px; font-weight: 800; color: #2dd4bf; margin: 10px 0;'>대기상태 (0% / 1차년도)</div>
             <p style='color: #cbd5e1; font-size: 13px; line-height:1.5;'>• 5년차 EP: Ets1 조절 비임상 안전성 검증, 용도 특허 확보 및 조기 L/O 패키징 완결<br>• 핵심 타겟: Ets1 전사인자, dLck-cre 마우스 모델<br>• 현황: dLck-cre 결핍 마우스 교배 시나리오 및 T세포 노화 프로파일링 설계 대기</p>
         </div>
@@ -712,7 +712,7 @@ elif "물질 라이브러리" in menu_selection:
 # ---------------------------------------------------------
 # 📅 [MENU 4] 랩 미팅 및 블로커 (Lab Sync)
 # ---------------------------------------------------------
-elif "랩 미팅 및 블로커" in menu_selection:
+elif "랩 미팅" in menu_selection:
     st.markdown("<h1>📅 랩 미팅 & 실시간 블로커(병목) 트래커</h1>", unsafe_allow_html=True)
     st.markdown(f"다기관 PI 공동연구진의 주간 안건 및 병목 구간입니다. {tooltip('4-HNE', dict_tooltip['4-HNE'])} 독성 해소, {tooltip('H3K27me3', dict_tooltip['H3K27me3'])} 잠금장치 복원 등 랩 논의 안건이 투명하게 개방됩니다.", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
