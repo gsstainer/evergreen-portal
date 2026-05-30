@@ -58,18 +58,31 @@ st.markdown("""
         background-color: transparent !important;
     }
     
-    /* Dropdown popups styling */
-    div[data-testid="stVirtualDropdown"] div {
+    /* Bulletproof Dropdown Popover & Listbox Styling (prevents white-on-white text) */
+    div[data-baseweb="popover"], div[data-baseweb="menu"], ul[role="listbox"], [data-testid="stVirtualDropdown"] {
         background-color: #1e293b !important;
         color: #ffffff !important;
+        border: 1px solid #475569 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
     }
     
-    div[data-testid="stVirtualDropdown"] li {
+    /* Ensure all child elements in popups and listboxes are white text on dark background */
+    div[data-baseweb="popover"] *, div[data-baseweb="menu"] *, ul[role="listbox"] *, [data-testid="stVirtualDropdown"] * {
         color: #ffffff !important;
-        background-color: #1e293b !important;
+        background-color: transparent !important;
     }
     
-    div[data-testid="stVirtualDropdown"] li:hover {
+    /* Style individual dropdown options */
+    li[role="option"], div[role="option"], [data-testid="stVirtualDropdown"] li {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        padding: 8px 12px !important;
+        transition: background-color 0.15s ease !important;
+    }
+    
+    /* Hover and highlighted option states */
+    li[role="option"]:hover, div[role="option"]:hover, [data-testid="stVirtualDropdown"] li:hover, li[data-highlighted="true"] {
         background-color: #155e75 !important;
         color: #ffffff !important;
     }
@@ -103,7 +116,25 @@ st.markdown("""
         color: #ffffff !important;
     }
     
-    /* Toggle switch contrast */
+    /* Toggle switch track & handle high-contrast overrides (fixes OFF state visibility) */
+    div[role="switch"] {
+        background-color: #475569 !important; /* Extremely visible slate grey-blue for OFF state */
+        border: 1px solid #64748b !important;
+        transition: background-color 0.2s ease, border-color 0.2s ease !important;
+    }
+    
+    div[role="switch"][aria-checked="true"] {
+        background-color: #14b8a6 !important; /* Radiant Glowing Teal track for ON state */
+        border-color: #2dd4bf !important;
+    }
+    
+    /* Toggle round knob handle styling */
+    div[role="switch"] div {
+        background-color: #ffffff !important; /* Pure white knob for extreme contrast */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    /* Toggle label contrast */
     div[data-testid="stCheckbox"] label * {
         color: #ffffff !important;
     }
