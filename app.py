@@ -175,6 +175,54 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
+# 🔒 Premium Security Gateway (Password Lock: evergreen)
+# ---------------------------------------------------------
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+def check_password():
+    """Returns True if the user entered the correct password."""
+    if st.session_state.authenticated:
+        return True
+
+    # Render a premium glassmorphic login gate
+    col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
+    with col_l2:
+        st.markdown("<br><br><br>", unsafe_allow_html=True)
+        st.markdown("""
+        <div class="card-wrapper" style="text-align: center; padding: 40px 30px; border: 2px solid #14b8a6; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+            <div style="font-size: 60px; margin-bottom: 20px;">🔒</div>
+            <h2 style="border-left: none; padding-left: 0; text-align: center; color: #f8fafc; margin-top: 0;">Evergreen LIMS Portal</h2>
+            <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 25px; line-height: 1.6;">
+                본 시스템은 다기관 공동연구원 및 관계자 전용 LIMS 관제 포털입니다.<br>
+                비허가자의 접근을 제한하기 위해 보안 암호를 입력해 주십시오.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        password_input = st.text_input("보안 패스워드 입력", type="password", key="login_pw", placeholder="Enter Portal Password")
+        
+        if password_input:
+            if password_input == "evergreen":
+                st.session_state.authenticated = True
+                st.success("보안 암호 확인 완료. 포털에 진입합니다...")
+                st.rerun()
+            else:
+                st.error("보안 암호가 올바르지 않습니다. 다시 시도해 주십시오.")
+        
+        st.markdown("<br><br>", unsafe_allow_html=True)
+        st.markdown(
+            "<div style='text-align: center; color: #475569; font-size: 13px;'>"
+            "© 2026 Evergreen Joint Laboratory. All Rights Reserved."
+            "</div>", 
+            unsafe_allow_html=True
+        )
+    return False
+
+if not check_password():
+    st.stop()
+
+# ---------------------------------------------------------
 # Helper Functions (State Badges & Custom Tooltips)
 # ---------------------------------------------------------
 def render_badge(status):
