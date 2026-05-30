@@ -29,9 +29,21 @@ st.markdown("""
         background-color: #0b0f19 !important;
     }
     
+    /* Streamlit Top Header Bar Accent with Lovely Ocean Blue Gradient */
+    [data-testid="stHeader"] {
+        background: linear-gradient(90deg, #0e7490 0%, #0b0f19 100%) !important;
+        border-bottom: 2px solid #2dd4bf40 !important;
+    }
+    
     /* Prevent black-on-black or low-contrast text on all headings, paragraphs, and list items */
-    h1, h2, h3, p, li, span, label {
+    h2, h3, p, li, span, label {
         color: #f1f5f9 !important;
+    }
+    
+    /* Glowing premium ocean blue for main H1 titles at the top of the pages */
+    h1 {
+        color: #38bdf8 !important;
+        text-shadow: 0 0 12px rgba(56, 189, 248, 0.45) !important;
     }
     
     /* Style all native text fields, selectboxes, and dropdowns for extreme high contrast */
