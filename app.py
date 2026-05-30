@@ -427,6 +427,47 @@ if not excel_data:
     for sheet_name, rows in BUILTIN_PIPELINES.items():
         excel_data[sheet_name] = pd.DataFrame(rows)
 
+# Initialize Session State for Pipelines to enable dynamic additions & modifications
+if "pipeline_db" not in st.session_state:
+    st.session_state.pipeline_db = {}
+    for sheet_name, df in excel_data.items():
+        st.session_state.pipeline_db[sheet_name] = df.copy()
+    
+    # Ensure sheets Y1 to Y5 all exist and are beautifully hydrated
+    years_keys = ["Y1_1차년도", "Y2_2차년도", "Y3_3차년도", "Y4_4차년도", "Y5_5차년도"]
+    for y in years_keys:
+        if y not in st.session_state.pipeline_db:
+            if y == "Y1_1차년도" and "Y1_1차년도" in BUILTIN_PIPELINES:
+                st.session_state.pipeline_db["Y1_1차년도"] = pd.DataFrame(BUILTIN_PIPELINES["Y1_1차년도"])
+            else:
+                y_num = y.split("_")[0].replace("Y", "")
+                mock_rows = []
+                mock_rows.append({
+                    "Epic ID": "EP-EG1", 
+                    "Epic (Project)": "노화 대식세포 표적 황반변성 치료제", 
+                    "Milestone (Phase)": f"M1. {y_num}차년도 핵심 병리 작용 분석 및 최적화", 
+                    "Task — Specific Experiments (Bullet Points)": f"• EP-EG1 {y_num}차년도 비임상 효능 최적화 스크리닝 진행\n• MoA 분자 신호 전달 경로 검증", 
+                    "담당 PI 연구팀": "1세부 공동연구팀", 
+                    "Timeline": f"Y{y_num}-Q1~Q2"
+                })
+                mock_rows.append({
+                    "Epic ID": "EP-EG2", 
+                    "Epic (Project)": "소화기암 기질 해체 및 전이/악액질 제어", 
+                    "Milestone (Phase)": f"M1. {y_num}차년도 나노 제형 효능 실증 및 3D 칩 검증", 
+                    "Task — Specific Experiments (Bullet Points)": f"• EP-EG2 {y_num}차년도 암-Niche 상호작용 및 기질 해체 억제 테스트\n• 장-근육-면역 축 인자 모니터링 어세이", 
+                    "담당 PI 연구팀": "2세부 공동연구팀", 
+                    "Timeline": f"Y{y_num}-Q1~Q2"
+                })
+                mock_rows.append({
+                    "Epic ID": "EP-EG3", 
+                    "Epic (Project)": "면역노화 진단 바이오마커 개발", 
+                    "Milestone (Phase)": f"M1. {y_num}차년도 Ets1 활성 및 후성유전학 재프로그래밍 MoA 규명", 
+                    "Task — Specific Experiments (Bullet Points)": f"• EP-EG3 {y_num}차년도 T세포 크로마틴 접근성 ChIP-seq 및 ATAC-seq 분석\n• 동물 모델 효능 분석 및 ADME 평가", 
+                    "담당 PI 연구팀": "3세부 공동연구팀", 
+                    "Timeline": f"Y{y_num}-Q1~Q2"
+                })
+                st.session_state.pipeline_db[y] = pd.DataFrame(mock_rows)
+
 # ---------------------------------------------------------
 # [1. Navigation GNB Sidebar - 3-Click Rule]
 # ---------------------------------------------------------
@@ -517,69 +558,136 @@ if "대시보드 총괄" in menu_selection:
 # ---------------------------------------------------------
 elif "세부과제별 파이프라인" in menu_selection:
     st.markdown("<h1>🧬 세부과제별 마일스톤 및 실험 파이프라인</h1>", unsafe_allow_html=True)
-    st.markdown(f"국가전략과제계획서에서 추출된 연차별 마일스톤 테이블입니다. 8월 과제 시작에 맞춰 모든 세부 실험 태스크는 <b>'대기'</b> 상태로 안전하게 셋업되었습니다. ({tooltip('TSA/DSF', dict_tooltip['TSA/DSF'])}, {tooltip('dLck-cre', dict_tooltip['dLck-cre'])}) 등 전문 용어에 호버하시면 측정 근거 주석이 팝업됩니다.", unsafe_allow_html=True)
+    st.markdown(f"국가전략과제계획서에서 추출된 연차별 마일스톤 테이블입니다. 직접 데이터를 추가하거나 셀을 더블클릭하여 수정할 수 있으며, ({tooltip('TSA/DSF', dict_tooltip['TSA/DSF'])}, {tooltip('dLck-cre', dict_tooltip['dLck-cre'])}) 등 전문 용어에 호버하시면 측정 근거 주석이 팝업됩니다.", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
 
-    search_q = st.text_input("🔍 마일스톤 및 태스크 키워드 검색 (예: ALK7, 오가노이드, Ets1, SARM1 등)", "")
-    
-    rows = []
-    for s_name, df in excel_data.items():
-        if s_name == "Y0_5yr_Summary":
-            continue
-        for idx, r in df.iterrows():
-            task_text = r.get("Task — Specific Experiments (Bullet Points)", "") or r.get("Unnamed: 3", "")
-            if not task_text or "Task" in str(task_text) or "Data Source" in str(task_text):
-                continue
-                
-            # Clean up the Year string display (e.g. Y1_1차년도 -> 1차년도 (Year 1))
-            parts = s_name.replace("Y", "").split("_")
-            y_display = f"{parts[1]} (Year {parts[0]})" if len(parts) >= 2 else s_name.replace("Y", "Year ").replace("_", " ")
-            
-            # Format raw specific task bullets to clean styling and auto-link custom biotech tooltips
-            task_html = ""
-            for item in str(task_text).split("\n"):
-                item = item.strip()
-                if not item:
+    # 5-Year Navigation & Mode Switch
+    col_nav1, col_nav2 = st.columns([3, 1])
+    with col_nav1:
+        selected_year = st.selectbox(
+            "📅 연차별 계획 필터링",
+            ["All (5개년 전체)", "1차년도 (Year 1)", "2차년도 (Year 2)", "3차년도 (Year 3)", "4차년도 (Year 4)", "5차년도 (Year 5)"],
+            key="pipeline_year_select"
+        )
+    with col_nav2:
+        edit_mode = st.toggle("🔓 LIMS 실시간 편집 활성화", value=False, key="pipeline_edit_toggle")
+
+    # Map selected year to sheet keys
+    year_map = {
+        "All (5개년 전체)": ["Y1_1차년도", "Y2_2차년도", "Y3_3차년도", "Y4_4차년도", "Y5_5차년도"],
+        "1차년도 (Year 1)": ["Y1_1차년도"],
+        "2차년도 (Year 2)": ["Y2_2차년도"],
+        "3차년도 (Year 3)": ["Y3_3차년도"],
+        "4차년도 (Year 4)": ["Y4_4차년도"],
+        "5차년도 (Year 5)": ["Y5_5차년도"]
+    }
+    target_sheets = year_map[selected_year]
+
+    # --- Mode 1: Interactive Data Editor Mode ---
+    if edit_mode:
+        st.info("💡 **LIMS 데이터 실시간 편집 모드**: 표 내부의 셀을 더블클릭하여 자유롭게 수정하거나, 표 최하단의 `+ Add row` 버튼을 클릭하여 행을 추가할 수 있습니다. 수정한 뒤 좌측의 'All (5개년 전체)' 필터를 변경하거나 편집 모드를 끄면 고대비 완성본으로 렌더링됩니다.")
+        
+        if selected_year == "All (5개년 전체)":
+            tab_names = ["1차년도", "2차년도", "3차년도", "4차년도", "5차년도"]
+            tabs = st.tabs(tab_names)
+            for idx, key in enumerate(target_sheets):
+                with tabs[idx]:
+                    df = st.session_state.pipeline_db[key]
+                    edited_df = st.data_editor(
+                        df,
+                        use_container_width=True,
+                        num_rows="dynamic",
+                        key=f"editor_{key}",
+                        column_config={
+                            "Epic ID": st.column_config.SelectboxColumn("과제 ID (Epic ID)", options=["EP-EG1", "EP-EG2", "EP-EG3"], required=True),
+                            "Epic (Project)": st.column_config.TextColumn("Epic 과제명", width="medium"),
+                            "Milestone (Phase)": st.column_config.TextColumn("마일스톤 (Phase)", width="large"),
+                            "Task — Specific Experiments (Bullet Points)": st.column_config.TextColumn("세부 실험 Task", width="large"),
+                            "담당 PI 연구팀": st.column_config.TextColumn("담당 PI/연구팀", width="medium"),
+                            "Timeline": st.column_config.TextColumn("일정", width="small")
+                        }
+                    )
+                    st.session_state.pipeline_db[key] = edited_df
+        else:
+            key = target_sheets[0]
+            df = st.session_state.pipeline_db[key]
+            edited_df = st.data_editor(
+                df,
+                use_container_width=True,
+                num_rows="dynamic",
+                key=f"editor_single_{key}",
+                column_config={
+                    "Epic ID": st.column_config.SelectboxColumn("과제 ID (Epic ID)", options=["EP-EG1", "EP-EG2", "EP-EG3"], required=True),
+                    "Epic (Project)": st.column_config.TextColumn("Epic 과제명", width="medium"),
+                    "Milestone (Phase)": st.column_config.TextColumn("마일스톤 (Phase)", width="large"),
+                    "Task — Specific Experiments (Bullet Points)": st.column_config.TextColumn("세부 실험 Task", width="large"),
+                    "담당 PI/연구팀": st.column_config.TextColumn("담당 PI/연구팀", width="medium"),
+                    "Timeline": st.column_config.TextColumn("일정", width="small")
+                }
+            )
+            st.session_state.pipeline_db[key] = edited_df
+
+    # --- Mode 2: Premium Visual Table Mode ---
+    else:
+        search_q = st.text_input("🔍 마일스톤 및 태스크 키워드 검색 (예: ALK7, 오가노이드, Ets1, SARM1 등)", "")
+        
+        rows = []
+        for s_name in target_sheets:
+            df = st.session_state.pipeline_db[s_name]
+            for idx, r in df.iterrows():
+                task_text = r.get("Task — Specific Experiments (Bullet Points)", "") or r.get("Unnamed: 3", "")
+                if not task_text or "Task" in str(task_text) or "Data Source" in str(task_text):
                     continue
-                if item.startswith("•"):
-                    clean_item = item.replace("•", "").strip()
-                    # Auto-inject hover tooltips for biotech terminology
-                    for term, definition in dict_tooltip.items():
-                        if term in clean_item:
-                            clean_item = clean_item.replace(term, tooltip(term, definition))
-                    task_html += f"<div style='margin-bottom: 8px; padding-left: 10px; border-left: 2px solid #2dd4bf; line-height: 1.6;'>• {clean_item}</div>"
+                    
+                # Clean up the Year string display (e.g. Y1_1차년도 -> 1차년도 (Year 1))
+                parts = s_name.replace("Y", "").split("_")
+                y_display = f"{parts[1]} (Year {parts[0]})" if len(parts) >= 2 else s_name.replace("Y", "Year ").replace("_", " ")
+                
+                # Format raw specific task bullets to clean styling and auto-link custom biotech tooltips
+                task_html = ""
+                for item in str(task_text).split("\n"):
+                    item = item.strip()
+                    if not item:
+                        continue
+                    if item.startswith("•"):
+                        clean_item = item.replace("•", "").strip()
+                        # Auto-inject hover tooltips for biotech terminology
+                        for term, definition in dict_tooltip.items():
+                            if term in clean_item:
+                                clean_item = clean_item.replace(term, tooltip(term, definition))
+                        task_html += f"<div style='margin-bottom: 8px; padding-left: 10px; border-left: 2px solid #2dd4bf; line-height: 1.6;'>• {clean_item}</div>"
+                    else:
+                        for term, definition in dict_tooltip.items():
+                            if term in item:
+                                item = item.replace(term, tooltip(term, definition))
+                        task_html += f"<div style='margin-bottom: 8px; line-height: 1.6;'>{item}</div>"
+                
+                # Auto-inject hover tooltips for Milestone phase too
+                milestone_text = r.get("Milestone (Phase)", "") or r.get("Unnamed: 2", "")
+                for term, definition in dict_tooltip.items():
+                    if term in milestone_text:
+                        milestone_text = milestone_text.replace(term, tooltip(term, definition))
+
+                row_data = {
+                    "연차": y_display,
+                    "Epic ID": r.get("Epic ID", "") or r.get("에버그린 프로젝트 1차년도 (Year 1) — Epic → Milestone → Task", ""),
+                    "Milestone": milestone_text,
+                    "세부 실험 Task": task_html,
+                    "일정": r.get("Timeline", "") or r.get("Unnamed: 5", ""),
+                    "상태": "대기"
+                }
+                
+                if search_q:
+                    # Include task text search
+                    row_str = " ".join([str(v) for v in [row_data["연차"], row_data["Epic ID"], row_data["Milestone"], task_text, row_data["일정"]]]).lower()
+                    if search_q.lower() in row_str:
+                        rows.append(row_data)
                 else:
-                    for term, definition in dict_tooltip.items():
-                        if term in item:
-                            item = item.replace(term, tooltip(term, definition))
-                    task_html += f"<div style='margin-bottom: 8px; line-height: 1.6;'>{item}</div>"
-            
-            # Auto-inject hover tooltips for Milestone phase too
-            milestone_text = r.get("Milestone (Phase)", "") or r.get("Unnamed: 2", "")
-            for term, definition in dict_tooltip.items():
-                if term in milestone_text:
-                    milestone_text = milestone_text.replace(term, tooltip(term, definition))
-
-            row_data = {
-                "연차": y_display,
-                "Epic ID": r.get("Epic ID", "") or r.get("에버그린 프로젝트 1차년도 (Year 1) — Epic → Milestone → Task", ""),
-                "Milestone": milestone_text,
-                "세부 실험 Task": task_html,
-                "일정": r.get("Timeline", "") or r.get("Unnamed: 5", ""),
-                "상태": "대기"
-            }
-            
-            if search_q:
-                # Include task text search
-                row_str = " ".join([str(v) for v in [row_data["연차"], row_data["Epic ID"], row_data["Milestone"], task_text, row_data["일정"]]]).lower()
-                if search_q.lower() in row_str:
                     rows.append(row_data)
-            else:
-                rows.append(row_data)
 
-    if rows:
-        st.subheader(f"📊 공식 실험 파이프라인 (총 {len(rows)}개 태스크 조회됨)")
-        table_html = """<table class="fixed-header-table">
+        if rows:
+            st.subheader(f"📊 공식 실험 파이프라인 (총 {len(rows)}개 태스크 조회됨)")
+            table_html = """<table class="fixed-header-table">
 <thead>
 <tr>
 <th style="width: 12%;">연차</th>
@@ -591,8 +699,8 @@ elif "세부과제별 파이프라인" in menu_selection:
 </tr>
 </thead>
 <tbody>"""
-        for r_data in rows:
-            table_html += f"""<tr>
+            for r_data in rows:
+                table_html += f"""<tr>
 <td><b style="color: #f8fafc; font-size: 14px;">{r_data['연차']}</b></td>
 <td>{get_epic_badge(r_data['Epic ID'])}</td>
 <td><b style="color: #e2e8f0; font-size: 14px;">{r_data['Milestone']}</b></td>
@@ -600,17 +708,17 @@ elif "세부과제별 파이프라인" in menu_selection:
 <td><code style="background-color: #1e293b; color: #38bdf8; padding: 4px 8px; border-radius: 4px; border: 1px solid #334155; font-weight: 600;">{r_data['일정']}</code></td>
 <td>{render_badge(r_data['상태'])}</td>
 </tr>"""
-        table_html += "</tbody></table>"
-        st.markdown(table_html, unsafe_allow_html=True)
-    else:
-        st.info("검색 조건에 부합하는 파이프라인 태스크가 없습니다.")
+            table_html += "</tbody></table>"
+            st.markdown(table_html, unsafe_allow_html=True)
+        else:
+            st.info("검색 조건에 부합하는 파이프라인 태스크가 없습니다.")
 
     with st.expander("📂 원본 데이터 엑셀 시트 뷰어"):
         if excel_data:
             sub_tabs = st.tabs(list(excel_data.keys()))
             for idx, (s_name, df) in enumerate(excel_data.items()):
                 with sub_tabs[idx]:
-                    st.dataframe(df, use_container_width=True)
+                    st.dataframe(st.session_state.pipeline_db[s_name], use_container_width=True)
 
 # ---------------------------------------------------------
 # 🧪 [MENU 3] 물질 라이브러리 (LIMS Explorer)
