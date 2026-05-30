@@ -428,7 +428,7 @@ if not excel_data:
         excel_data[sheet_name] = pd.DataFrame(rows)
 
 # Initialize Session State for Pipelines to enable dynamic additions & modifications
-if "pipeline_db" not in st.session_state:
+if "pipeline_db" not in st.session_state or not isinstance(st.session_state.pipeline_db, dict):
     st.session_state.pipeline_db = {}
     for sheet_name, df in excel_data.items():
         st.session_state.pipeline_db[sheet_name] = df.copy()
@@ -469,7 +469,7 @@ if "pipeline_db" not in st.session_state:
                 st.session_state.pipeline_db[y] = pd.DataFrame(mock_rows)
 
 # Initialize Session State for Blockers (Lab Sync) to enable dynamic additions & modifications
-if "blockers_db" not in st.session_state:
+if "blockers_db" not in st.session_state or not isinstance(st.session_state.blockers_db, dict):
     st.session_state.blockers_db = {}
     
     # Prepopulate Year 1 (1차년도) blockers with premium examples
