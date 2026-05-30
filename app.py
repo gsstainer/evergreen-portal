@@ -20,13 +20,80 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     
     /* GNB & Core App Styling with Strict Contrast */
-    html, body, [class*="css"] {
+    html, body, .stApp, [data-testid="stAppViewContainer"] {
         font-family: 'Inter', sans-serif;
-        background-color: #0b0f19;
-        color: #f1f5f9; /* High-contrast white text */
+        background-color: #0b0f19 !important;
+        color: #f1f5f9 !important;
     }
     .main {
-        background-color: #0b0f19;
+        background-color: #0b0f19 !important;
+    }
+    
+    /* Prevent black-on-black or low-contrast text on all headings, paragraphs, and list items */
+    h1, h2, h3, p, li, span, label {
+        color: #f1f5f9 !important;
+    }
+    
+    /* Style all native text fields, selectboxes, and dropdowns for extreme high contrast */
+    div[data-baseweb="select"] {
+        background-color: #1e293b !important;
+        border: 1px solid #475569 !important;
+        border-radius: 6px !important;
+    }
+    
+    div[data-baseweb="select"] * {
+        color: #ffffff !important;
+        background-color: transparent !important;
+    }
+    
+    /* Dropdown popups styling */
+    div[data-testid="stVirtualDropdown"] div {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+    }
+    
+    div[data-testid="stVirtualDropdown"] li {
+        color: #ffffff !important;
+        background-color: #1e293b !important;
+    }
+    
+    div[data-testid="stVirtualDropdown"] li:hover {
+        background-color: #155e75 !important;
+        color: #ffffff !important;
+    }
+
+    /* Style text input fields */
+    div[data-testid="stTextInput"] input {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        border: 1px solid #475569 !important;
+        border-radius: 6px !important;
+    }
+    
+    /* Expanders high contrast */
+    div[data-testid="stExpander"] {
+        background-color: #1e293b !important;
+        border: 1px solid #475569 !important;
+        border-radius: 8px !important;
+    }
+    
+    div[data-testid="stExpander"] * {
+        color: #ffffff !important;
+    }
+
+    /* Streamlit alert/notification high contrast overrides */
+    div[data-testid="stNotification"] {
+        background-color: #1e1b4b !important;
+        border: 1px solid #4f46e5 !important;
+        border-radius: 8px !important;
+    }
+    div[data-testid="stNotification"] * {
+        color: #ffffff !important;
+    }
+    
+    /* Toggle switch contrast */
+    div[data-testid="stCheckbox"] label * {
+        color: #ffffff !important;
     }
     
     /* Typography Scannability Contrast */
